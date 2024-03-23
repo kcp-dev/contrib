@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: system:faros:apiexport:training:maximal-permission-policy
+rules:
+- apiGroups: ["training.faros.sh"]
+  verbs: ["*"]
+  resources:
+  - workspaces
+  - workspacetypes
+- apiGroups: ["training.faros.sh"]
+  verbs: ["list","watch","get"]
+  resources:
+  - workspaces/status
+  - workspacetypes/status
