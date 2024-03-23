@@ -1,0 +1,9 @@
+apiVersion: apis.kcp.io/v1alpha1
+kind: APIExport
+metadata:
+  creationTimestamp: null
+  name: training.faros.sh
+spec:
+  latestResourceSchemas:
+  - v240303-3d653f7.models.training.faros.sh
+status: {}

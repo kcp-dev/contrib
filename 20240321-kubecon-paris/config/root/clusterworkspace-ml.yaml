@@ -1,0 +1,11 @@
+apiVersion: tenancy.kcp.io/v1alpha1
+kind: Workspace
+metadata:
+  name: ml
+  annotations:
+    faros.sh/description: "ML training main workspace for system integrations"
+    bootstrap.kcp.io/create-only: "true"
+spec:
+  type:
+    name: organization
+    path: root

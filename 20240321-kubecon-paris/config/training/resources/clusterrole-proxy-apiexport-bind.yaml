@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: system:faros:apiexport:training:bind
+rules:
+- apiGroups:
+  - "apis.kcp.io"
+  resources:
+  - "apiexports"
+  resourceNames:
+  - "training.faros.sh"
+  verbs: ["bind"]
