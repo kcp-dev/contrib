@@ -2,6 +2,9 @@
 
 The repository contains the list of demo code, slides and other materials used in the meetups, conferences.
 
+- [Platform Engineering Day EU 2024 - Building a Platform Engineering API Layer with kcp](./20240319-platform-engineering-day-eu-paris/)
+    - [YouTube](https://www.youtube.com/watch?v=az5Rm8Snms4)
+    - [Slides](./20240319-platform-engineering-day-eu-paris/slides.pdf)
 - [KCP ML shop](./20240321-kubecon-paris/) - KCP Service owner, provider and user
 demo. 
     - [YouTube](https://www.youtube.com/watch?v=7op_r9R0fCo)
