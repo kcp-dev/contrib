@@ -2,15 +2,17 @@
 
 The repository contains the list of demo code, slides and other materials used in the meetups, conferences.
 
+- [Platform Engineering Day EU 2024 - Building a Platform Engineering API Layer with kcp](./20240319-platform-engineering-day-eu-paris/)
+    - [YouTube](https://www.youtube.com/watch?v=az5Rm8Snms4)
+    - [Slides](./20240319-platform-engineering-day-eu-paris/slides.pdf)
 - [KCP ML shop](./20240321-kubecon-paris/) - KCP Service owner, provider and user
 demo. 
-    - [Youtube](https://www.youtube.com/watch?v=7op_r9R0fCo)
-    - [Slides](./20240321-kubecon-paris/KubeCon 2024 - Paris - Why Kubernetes Is Inappropriate for Platforms and How to Make It Better.pdf)
-
+    - [YouTube](https://www.youtube.com/watch?v=7op_r9R0fCo)
+    - [Slides](./20240321-kubecon-paris/slides.pdf)
 
 ## Other content
 
-- [KubeCon 2024 - Paris - Why Kubernetes Is Inappropriate for Platforms and How to Make It Better.pdf](https://www.youtube.com/watch?v=7op_r9R0fCo)
+- [KubeCon 2024 - Paris - Why Kubernetes Is Inappropriate for Platforms and How to Make It Better (video)](https://www.youtube.com/watch?v=7op_r9R0fCo)
 - [KubeCon EU 2021: Kubernetes as the Hybrid Cloud Control Plane Keynote - Clayton Coleman (video)](https://www.youtube.com/watch?v=oaPBYUfdFE8)
 - [OpenShift Commons: Kubernetes as the Control Plane for the Hybrid Cloud - Clayton Coleman (video)](https://www.youtube.com/watch?v=Y3Y11Aj_01I)
 - [TGI Kubernetes 157: Exploring kcp: apiserver without Kubernetes](https://youtu.be/FD_kY3Ey2pI)
