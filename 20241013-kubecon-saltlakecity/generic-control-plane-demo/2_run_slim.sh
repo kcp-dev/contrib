@@ -24,7 +24,8 @@ cd "$temp_dir"
 # Function to start the `go` process in the background
 start_go_process() {
   echo "Starting 'go run ./cmd/gcp start' process..."
-  go run ./cmd/gcp start  # Assuming the entry point is in the root directory of the cloned repo
+  read -n 1 -s
+  ./gcp start  # Assuming the entry point is in the root directory of the cloned repo
   go_pid=$!
   echo "Process started with PID $go_pid"
 }

@@ -18,38 +18,15 @@
 
 # Step 1: Set a fixed temporary directory
 temp_dir="/tmp/kcp"
+current_dir=$(pwd)
 
 cd "$temp_dir/contrib/mounts-vw"
 export KUBECONFIG=$PWD/../../.kcp/admin.kubeconfig
 
-
-kubectl ws use :root
-
-kubectl ws create operators
-kubectl ws use operators
-
-kubectl ws create mounts
-kubectl ws use mounts
-
-kubectl create -f config/mounts/resources/apibinding-targets.yaml
-
-kind create cluster --name kind
-kind get kubeconfig --name kind > kind.kubeconfig
-
-kubectl ws use root:operators:mounts
-kubectl create secret generic kind-kubeconfig --from-file=kubeconfig=kind.kubeconfig
-
-sleep 5
-
-# create target cluster:
-kubectl create -f config/mounts/resources/example-target-cluster.yaml
-
-# create vcluster target:
-kubectl create -f config/mounts/resources/example-target-vcluster.yaml
-
+kubectl ws use :root:operators:mounts > /dev/null 2>&1
 
 # Initialize the variable as empty
-kubeSecretString=""
+export kubeSecretString=""
 
 # Loop until kubeSecretString is not empty
 while [[ -z "$kubeSecretString" ]]; do
@@ -61,10 +38,10 @@ while [[ -z "$kubeSecretString" ]]; do
 done
 
 # Print the result or proceed with your next steps
-echo "Secret String for KubeCluster is ready: $kubeSecretString"
+# echo "Secret String for KubeCluster is ready: $kubeSecretString"
 
 # Initialize the variable as empty
-vclusterSecretString=""
+export vclusterSecretString=""
 
 # Loop until kubeSecretString is not empty
 while [[ -z "$vclusterSecretString" ]]; do
@@ -76,23 +53,59 @@ while [[ -z "$vclusterSecretString" ]]; do
 done
 
 # Print the result or proceed with your next steps
-echo "Secret String for VCluster is ready: $vclusterSecretString"
+# echo "Secret String for VCluster is ready: $vclusterSecretString"
 
 # Create a consumer workspace for mounts:
 
-echo "Create consumer workspace for mounts"
-kubectl ws use :root
-kubectl ws create consumer
-kubectl ws use consumer
-kubectl ws create kind-cluster
+# echo "Create consumer workspace for mounts"
+kubectl ws use :root > /dev/null 2>&1
+kubectl create workspace consumer > /dev/null 2>&1
+kubectl ws use consumer > /dev/null 2>&1
+kubectl create workspace kind-cluster > /dev/null 2>&1
 
-kubectl create -f config/mounts/resources/apibinding-mounts.yaml
+kubectl create -f config/mounts/resources/apibinding-mounts.yaml > /dev/null 2>&1
 
-cat /tmp/kcp/contrib/mounts-vw/config/mounts/resources/example-mount-cluster.yaml | yq '.spec.secretString= env(kubeSecretString)' - > /tmp/kcp/contrib/mounts-vw/config/mounts/resources/example-mount-cluster.yaml_new
+cat /tmp/kcp/contrib/mounts-vw/config/mounts/resources/example-mount-cluster.yaml | yq '.spec.secretString=env(kubeSecretString)' - > /tmp/kcp/contrib/mounts-vw/config/mounts/resources/example-mount-cluster.yaml_new
 
-cat /tmp/kcp/contrib/mounts-vw/config/mounts/resources/example-mount-cluster.yaml_new
-kubectl create -f /tmp/kcp/contrib/mounts-vw/config/mounts/resources/example-mount-cluster.yaml_new
+# cat /tmp/kcp/contrib/mounts-vw/config/mounts/resources/example-mount-cluster.yaml_new
+kubectl create -f /tmp/kcp/contrib/mounts-vw/config/mounts/resources/example-mount-cluster.yaml_new > /dev/null 2>&1
 
- kubectl annotate workspace kind-cluster  experimental.tenancy.kcp.io/mount='{"spec":{"ref":{"kind":"KubeCluster","name":"proxy-cluster","apiVersion":"mounts.contrib.kcp.io/v1alpha1"}}}'
+kubectl annotate workspace kind-cluster  experimental.tenancy.kcp.io/mount='{"spec":{"ref":{"kind":"KubeCluster","name":"proxy-cluster","apiVersion":"mounts.contrib.kcp.io/v1alpha1"}}}' > /dev/null 2>&1
 
-echo "export KUBECONFIG=$PWD/../../.kcp/admin.kubeconfig"
+#echo "export KUBECONFIG=$PWD/../../.kcp/admin.kubeconfig"
+
+echo "let's create vclusters and observe... "
+echo ""
+read -n 1 -s
+
+echo "kubectl create -f vcluster/team1.yaml"
+read -n 1 -s
+cat $current_dir/vcluster/team1.yaml | yq '.spec.secretString=env(vclusterSecretString)' - > /tmp/vluster-team1.yaml
+kubectl create -f /tmp/vluster-team1.yaml
+
+
+echo "kubectl create -f /tmp/vluster-team2.yaml"
+read -n 1 -s
+cat $current_dir/vcluster/team2.yaml | yq '.spec.secretString= env(vclusterSecretString)' - > /tmp/vluster-team2.yaml
+kubectl create -f /tmp/vluster-team2.yaml
+
+echo "Now we have 2 vclusters, let's create workspaces for team1 and team2"
+echo ""
+
+echo "kubectl create workspace team1"
+read -n 1 -s
+kubectl create workspace team1
+
+echo "kubectl create workspace team2"
+read -n 1 -s
+kubectl create workspace team2
+
+echo "Let's see that before we mount the vclusters to the workspaces, its just a normal workspace"
+
+echo "mount the vcluster to team1"
+read -n 1 -s
+kubectl annotate workspace team1  experimental.tenancy.kcp.io/mount='{"spec":{"ref":{"kind":"VCluster","name":"team-1","apiVersion":"mounts.contrib.kcp.io/v1alpha1"}}}' --overwrite
+
+echo "mount the vcluster to team2"
+read -n 1 -s
+kubectl annotate workspace team2  experimental.tenancy.kcp.io/mount='{"spec":{"ref":{"kind":"VCluster","name":"team-2","apiVersion":"mounts.contrib.kcp.io/v1alpha1"}}}' --overwrite

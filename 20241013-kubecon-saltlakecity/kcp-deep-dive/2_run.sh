@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # Copyright 2024 The KCP Authors.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
+#     
+# Licensed under the Apache License, Version 2.0 (the "License")
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
@@ -24,7 +24,7 @@ cd "$temp_dir"
 # Function to start the `go` process in the background
 start_go_process() {
   echo "Starting 'go run ./cmd/kcp start' process..."
-  go run ./cmd/kcp start --mapping-file=./contrib/mounts-vw/assets/path-mapping.yaml --feature-gates=WorkspaceMounts=true
+  ./kcp start --mapping-file=./contrib/mounts-vw/assets/path-mapping.yaml --feature-gates=WorkspaceMounts=true 
   go_pid=$!
   echo "Process started with PID $go_pid"
 }

@@ -38,12 +38,12 @@ kubectl create -f config/mounts/resources/apiresourceschema-vclusters.mounts.con
 kubectl create -f config/mounts/resources/apiexport-mounts.contrib.kcp.io.yaml
 kubectl create -f config/mounts/resources/apiexport-targets.contrib.kcp.io.yaml
 
-echo "sleep 10, waiting for the resources to be created"
-sleep 10
+echo "sleep 5, waiting for the resources to be created (yes, I was lazy and didnt do a proper wait)"
+sleep 5
 
 kubectl ws use :root
 
- go run ./cmd/virtual-workspaces/ start \
+ ./proxy start \
  --kubeconfig=../../.kcp/admin.kubeconfig  \
  --tls-cert-file=../../.kcp/apiserver.crt \
  --tls-private-key-file=../../.kcp/apiserver.key \

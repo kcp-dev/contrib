@@ -27,5 +27,5 @@ echo ""
 echo "Don't foget to press any key to continue..."
 echo ""
 read -n 1 -s
-go run ./cmd/gcp start --batteries leases,authentication,admission,authorization,flowcontrol,crds
+./gcp start --batteries leases,authentication,admission,authorization,flowcontrol,crds
 echo "Process started with PID $go_pid"
