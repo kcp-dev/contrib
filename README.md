@@ -9,6 +9,10 @@ The repository contains the list of demo code, slides and other materials used i
 demo. 
     - [YouTube](https://www.youtube.com/watch?v=7op_r9R0fCo)
     - [Slides](./20240321-kubecon-paris/slides.pdf)
+- [KubeCon'24 Salt Lake City, US -  Deep Dive Into Generic Control Planes and kcp](./20241013-kubecon-saltlakecity/slides.pdf)
+    - [YouTube](https://www.youtube.com/watch?v=R9YUOo0MwqY)
+    - [Slides](./20241013-kubecon-saltlakecity/slides.pdf)
+    - [Demo](./20241013-kubecon-saltlakecity/)
 
 ## Other content
 
