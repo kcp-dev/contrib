@@ -1,0 +1,53 @@
+apiVersion: syncagent.kcp.io/v1alpha1
+kind: PublishedResource
+metadata:
+  name: publish-postgres-postgresql
+spec:
+  resource:
+    kind: postgresql
+    apiGroup: acid.zalan.do
+    version: v1
+  naming:
+    # This is the implicit default configuration.
+    namespace: "$remoteClusterName"
+    name: "pg-$remoteNamespaceHash-$remoteNameHash"
+  related:
+    - # unique name for this related resource. The name must be unique within
+      # one PublishedResource and is the key by which consumers (end users)
+      # can identify and consume the related resource. Common names are
+      # "connection-details" or "credentials".
+      identifier: pg-secret
+
+      # "service" or "kcp"
+      origin: service
+
+      # for now, only "Secret" and "ConfigMap" are supported;
+      # there is no GVK projection for related resources
+      kind: Secret
+
+      # configure where in the parent object we can find
+      # the name/namespace of the related resource (the child)
+      reference:
+        name:
+          # This path is evaluated in both the local and remote objects, to figure out
+          # the local and remote names for the related object. This saves us from having
+          # to remember mutated fields before their mutation (similar to the last-known
+          # annotation).
+          path: spec.secretName
+
+        # namespace part is optional; if not configured,
+        # Sync Agent assumes the same namespace as the owning resource
+        #
+        # namespace:
+        #   path: spec.secretName
+        #   regex:
+        #     pattern: '...'
+        #     replacement: '...'
+        #
+        # to inject static values, select a meaningless string value
+        # and leave the pattern empty
+        #
+        # namespace:
+        #   path: metadata.uid
+        #   regex:
+        #     replacement: kube-system

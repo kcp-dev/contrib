@@ -1,0 +1,12 @@
+apiVersion: acid.zalan.do/v1
+kind: postgresql
+metadata:
+  name: inmemory-postgres
+  namespace: default
+spec:
+  teamId: "example-team"
+  numberOfInstances: 1
+  postgresql:
+    version: "17"
+  volume:
+    size: "1Gi"
