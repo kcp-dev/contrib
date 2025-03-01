@@ -22,3 +22,9 @@
 
 # Go workspace file
 go.work
+*.kubeconfig
+
+**/.kcp
+**/bin
+**.tar.gz
+kcp-operator
