@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kcp-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"  # Instructs the controller to use HTTPS when communicating with the backend
+spec:
+  tls:
+    - hosts:
+        - kcp.localhost
+      secretName: root-front-proxy-client-ca  # This secret must contain your TLS certificate and key
+  rules:
+    - host: kcp.localhost
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: frontproxy-front-proxy
+                port:
+                  number: 6443
