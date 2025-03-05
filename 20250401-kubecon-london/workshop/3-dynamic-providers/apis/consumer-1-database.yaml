@@ -1,12 +1,9 @@
-apiVersion: acid.zalan.do/v1
-kind: postgresql
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
 metadata:
-  name: inmemory-postgres
-  namespace: default
+  name: db-one
 spec:
-  teamId: "example-team"
-  numberOfInstances: 1
-  postgresql:
-    version: "17"
-  volume:
-    size: "1Gi"
+  name: one
+  owner: app
+  cluster:
+    name: kcp
