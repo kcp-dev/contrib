@@ -24,8 +24,12 @@ All these will be covered in the individual parts of the workshop, when we need 
 - kubectl installed
 - krew installed
 - helm installed
+- psql installed (TODO how to install)
 
 ## Parts
 
-- [Part 1 - Deploy kcp into kind](./part1/README.md) 
-- [Part 2 - Explore workspaces](./part2/README.md)
+- [Part 1 - Start kcp](./1-deploy-kcp-easy-way/README.md) 
+In this part we gonna start kcp binary and see how it works.
+
+- [Part 2 - Explore the workspaces](./2-explore-workspaces/README.md)
+In this part we gonna explore the workspaces and see how they work and how to use them
