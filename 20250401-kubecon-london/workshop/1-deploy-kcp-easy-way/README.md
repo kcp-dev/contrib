@@ -14,7 +14,9 @@ Run kcp:
 ./start.sh
 ```
 
-In separete terminal window:
+Leave it running. We will have it running in the background during all the workshop.
+In separete terminal window, set kubeconfig to kcp control plane kubeconfig.
+This will be our main terminal window for the workshop to interact with kcp.
 
 ```bash
 export KUBECONFIG=.kcp/admin.kubeconfig
