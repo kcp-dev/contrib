@@ -15,8 +15,15 @@ set -o errexit
 if [[ ! -f "${workshop_root}/bin/.checkpoint-kcp" ]]; then
   echo "🚀 Downloading kcp"
   curl -L "https://github.com/kcp-dev/kcp/releases/download/v0.26.1/kcp_0.26.1_${GOOS}_${GOARCH}.tar.gz" \
-    | tar -C "${workshop_root}" -xzf - bin/kcp
+    | tar -C "${workshop_root}" -xzf - bin/kcp 
   touch "${workshop_root}/bin/.checkpoint-kcp"
+fi
+
+if [[ ! -f "${workshop_root}/bin/.checkpoint-api-syncagent" ]]; then
+    echo "🚀 Downloading api-syncagent"
+    curl -L "https://github.com/kcp-dev/api-syncagent/releases/download/v0.2.0-alpha.0/api-syncagent_0.2.0-alpha.0_${GOOS}_${GOARCH}.tar.gz" \
+      | tar -C "${workshop_root}/bin" -xzf - api-syncagent
+    touch "${workshop_root}/bin/.checkpoint-api-syncagent"
 fi
 
 if [[ ! -f "${workshop_root}/bin/.checkpoint-kind" ]]; then
@@ -36,7 +43,8 @@ fi
 if [[ ! -f "${workshop_root}/bin/.checkpoint-kubectl-krew" ]]; then
   echo "🚀 Downloading kubectl-krew"
   curl -L "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew-${GOOS}_${GOARCH}.tar.gz" \
-    | tar -xzf - "./krew-${GOOS}_${GOARCH}" -O > "${workshop_root}/bin/kubectl-krew"
+    | tar -xzf - --strip-components=1 -C "${workshop_root}/bin" "krew-${GOOS}_${GOARCH}"
+  mv "${workshop_root}/bin/krew-${GOOS}_${GOARCH}" "${workshop_root}/bin/kubectl-krew"
   chmod +x "${workshop_root}/bin/kubectl-krew"
   touch "${workshop_root}/bin/.checkpoint-kubectl-krew"
 fi

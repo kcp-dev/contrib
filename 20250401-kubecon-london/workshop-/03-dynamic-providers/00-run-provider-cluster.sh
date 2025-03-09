@@ -16,12 +16,27 @@ source "${workshop_root}/lib/kubectl.sh"
 kind_cluster_name='provider'
 systemd_scope_name='workshop-kcp-kind.scope'
 
-# TODO: check we're on a systemd system.
-if ! systemctl is-active --user "${systemd_scope_name}" -q; then
-  echo "🚀 Starting up a kind cluster '${kind_cluster_name}'"
-  systemctl --user reset-failed "${systemd_scope_name}"
-  systemd-run --scope --unit="${systemd_scope_name}" --user -p "Delegate=yes" \
-    kind create cluster --name provider  --kubeconfig "${KUBECONFIGS_DIR}/provider.kubeconfig"
+# Determine OS platform
+OS=$(uname -s)
+
+if [ "$OS" = "Linux" ]; then
+    # Assume Linux distros with systemd (like Fedora)
+    if ! systemctl is-active --user "${systemd_scope_name}" -q; then
+        echo "🚀 Starting up a kind cluster '${kind_cluster_name}'"
+        systemctl --user reset-failed "${systemd_scope_name}"
+        systemd-run --scope --unit="${systemd_scope_name}" --user -p "Delegate=yes" \
+            kind create cluster --name provider  --kubeconfig "${KUBECONFIGS_DIR}/provider.kubeconfig"
+    fi
+elif [ "$OS" = "Darwin" ]; then
+    # macOS, which does not use systemd
+    # Check if a kind cluster is running
+    if ! pgrep -f "kind create cluster --name provider" > /dev/null; then
+        echo "🚀 Starting up a kind cluster '${kind_cluster_name}'"
+        # Start the kind cluster
+        kind create cluster --name provider --kubeconfig "${KUBECONFIGS_DIR}/provider.kubeconfig" &
+    fi
+else
+    echo "Unsupported operating system."
 fi
 
 KUBECONFIG="${KUBECONFIGS_DIR}/provider.kubeconfig" kubectl version > /dev/null
