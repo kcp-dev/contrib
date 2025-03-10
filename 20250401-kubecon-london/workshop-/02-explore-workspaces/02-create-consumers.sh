@@ -13,17 +13,17 @@ source "${workshop_root}/lib/kubectl.sh"
 
 [[ -f "${workshop_root}/.checkpoint-01" ]] || { printf "\n\t📜 You need to complete the previous exercise!\n\n" ; exit 1 ; }
 
-kubectl::ws::use ":"
+::kubectl::ws::use ":"
 
-kubectl::ws::create_enter "consumers" "root:organization"
+::kubectl::ws::create_enter "consumers" "root:organization"
 
-kubectl::ws::create_enter "wild-west" "root:universal"
-kubectl::kcp::bind_apiexport "root:providers:cowboys" "cowboys" "cowboys-consumer"
-kubectl::create_from_file "${exercise_dir}/apis/consumer-wild-west.yaml"
+::kubectl::ws::create_enter "wild-west" "root:universal"
+::kubectl::kcp::bind_apiexport "root:providers:cowboys" "cowboys" "cowboys-consumer"
+::kubectl::create_from_file "${exercise_dir}/apis/consumer-wild-west.yaml"
 
-kubectl::ws::use :root:consumers
-kubectl::ws::create_enter "wild-north" "root:universal"
-kubectl::kcp::bind_apiexport "root:providers:cowboys" "cowboys" "cowboys-consumer"
-kubectl::create_from_file "${exercise_dir}/apis/consumer-wild-north.yaml"
+::kubectl::ws::use :root:consumers
+::kubectl::ws::create_enter "wild-north" "root:universal"
+::kubectl::kcp::bind_apiexport "root:providers:cowboys" "cowboys" "cowboys-consumer"
+::kubectl::create_from_file "${exercise_dir}/apis/consumer-wild-north.yaml"
 
 "${workshop_root}/02-explore-workspaces/99-highfive.sh"
