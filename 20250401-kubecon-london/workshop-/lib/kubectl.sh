@@ -9,14 +9,14 @@ export KREW_ROOT="${workshop_root}/bin/.krew"
 export PATH="${workshop_root}/bin/.krew/bin:${workshop_root}/bin:${PATH}"
 export KUBECONFIG="${workshop_root}/.kcp/admin.kubeconfig"
 
-function kubectl::ws::use {
+function ::kubectl::ws::use {
   path="${1}"
   printf "\n✨Switching to Workspace '${path}':\n"
   printf "\$ kubectl ws use ${path}\n"
   kubectl ws use "${path}"
 }
 
-function kubectl::ws::create_enter {
+function ::kubectl::ws::create_enter {
   path="${1}"
   type="${2}"
   printf "\n\n✨Creating a Workspace '${path}' and switching to it:\n"
@@ -24,7 +24,7 @@ function kubectl::ws::create_enter {
   kubectl ws create --ignore-existing "${path}" --type "${type}" --enter
 }
 
-function kubectl::kcp::bind_apiexport {
+function ::kubectl::kcp::bind_apiexport {
   ws="${1}"
   apiexport="${2}"
   bindname="${3}"
@@ -35,7 +35,7 @@ function kubectl::kcp::bind_apiexport {
     kubectl kcp bind apiexport "${ws}:${apiexport}" --name "${bindname}"
 }
 
-function kubectl::create_from_file {
+function ::kubectl::create_from_file {
   filepath="${1}"
   printf "\n\n✨Creating a resource from file '${filepath}':\n"
   printf "\$ kubectl create -f ${filepath}\n"
@@ -43,7 +43,7 @@ function kubectl::create_from_file {
     kubectl create -f "${filepath}"
 }
 
-function kubectl::apply_from_file {
+function ::kubectl::apply_from_file {
   filepath="${1}"
   printf "\n\n✨Apply a resource from file '${filepath}':\n"
   printf "\$ kubectl apply -f ${filepath}\n"

@@ -9,7 +9,7 @@ export KREW_ROOT="${workshop_root}/bin/.krew"
 export PATH="${workshop_root}/bin/.krew/bin:${workshop_root}/bin:${PATH}"
 export KUBECONFIG="${workshop_root}/.kcp/admin.kubeconfig"
 
-function kind::cluster::create {
+function ::kind::cluster::create {
   name="${1}"
   printf "\n✨Creating a kind cluster '${name}':\n"
   printf "\$ kind cluster create ${name}\n"

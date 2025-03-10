@@ -16,9 +16,9 @@ source "${workshop_root}/lib/api-syncagent.sh"
 
 # TODO: can we extract kubeconfig only :root:providers?
 export KUBECONFIG="${KUBECONFIGS_DIR}/sync-agent.kubeconfig"
-kubectl::ws::use ":root:providers"
-kubectl::ws::create_enter "database" "root:universal"
-kubectl::create_from_file "${exercise_dir}/apis/export.yaml"
+::kubectl::ws::use ":root:providers"
+::kubectl::ws::create_enter "database" "root:universal"
+::kubectl::create_from_file "${exercise_dir}/apis/export.yaml"
 
 export KUBECONFIG="${KUBECONFIGS_DIR}/provider.kubeconfig"
 ::apisyncagent "postgresql.cnpg.io" "${KUBECONFIGS_DIR}/sync-agent.kubeconfig" "default"
