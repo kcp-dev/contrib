@@ -7,6 +7,7 @@ set -o errexit
 export workshop_root="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop-"
 export PATH="${workshop_root}/bin:${PATH}"
 export KUBECONFIG="${workshop_root}/.kcp/admin.kubeconfig"
+export KUBECONFIGS_DIR="${workshop_root}/kubeconfigs"
 
 [[ -f "${workshop_root}/.checkpoint-00" ]] || { printf "\n\t📜 You need to complete the previous exercise!\n\n" ; exit 1 ; }
 
@@ -27,7 +28,6 @@ kcp start & kcp_pid=$!
 trap 'kill -TERM ${kcp_pid}' TERM INT EXIT
 try_with_timeout
 
-export KUBECONFIGS_DIR="${workshop_root}/kubeconfigs"
 mkdir -p "${KUBECONFIGS_DIR}"
 cp "${workshop_root}/.kcp/admin.kubeconfig" "${KUBECONFIGS_DIR}/admin.kubeconfig"
 # Create a kubeconfig for the sync-agent just in case we need it
