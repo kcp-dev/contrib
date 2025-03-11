@@ -1,5 +1,0 @@
-apiVersion: apis.kcp.io/v1alpha1
-kind: APIExport
-metadata:
-  name: postgresql.cnpg.io
-spec: {}
