@@ -4,7 +4,7 @@ set -o nounset
 set -o pipefail
 set -o errexit
 
-export workshop_root="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop-"
+export workshop_root="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop"
 export PATH="${workshop_root}/bin:${PATH}"
 export KUBECONFIGS_DIR="${workshop_root}/kubeconfigs"
 source "${workshop_root}/lib/kind.sh"

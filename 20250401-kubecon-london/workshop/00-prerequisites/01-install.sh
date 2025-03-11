@@ -3,7 +3,7 @@
 set -o nounset
 set -o pipefail
 
-export workshop_root="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop-"
+export workshop_root="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop"
 export GOOS="$( uname | tr '[:upper:]' '[:lower:]' | grep -E 'linux|darwin' )"
 export GOARCH="$( uname -m | sed 's/x86_64/amd64/ ; s/aarch64/arm64/' | grep -E 'amd64|arm64' )"
 
