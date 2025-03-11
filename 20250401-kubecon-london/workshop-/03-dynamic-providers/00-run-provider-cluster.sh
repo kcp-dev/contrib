@@ -10,35 +10,14 @@ export PATH="${workshop_root}/bin/.krew/bin:${workshop_root}/bin:${PATH}"
 export KUBECONFIGS_DIR="${workshop_root}/kubeconfigs"
 export exercise_dir="$(dirname "${BASH_SOURCE[0]}")"
 source "${workshop_root}/lib/kubectl.sh"
+source "${workshop_root}/lib/kind.sh"
 
 [[ -f "${workshop_root}/.checkpoint-02" ]] || { printf "\n\t📜 You need to complete the previous exercise!\n\n" ; exit 1 ; }
 
 kind_cluster_name='provider'
-systemd_scope_name='workshop-kcp-kind.scope'
+kind_kubeconfig="${KUBECONFIGS_DIR}/${kind_cluster_name}.kubeconfig"
+::kind::create::cluster "${kind_cluster_name}" "${kind_kubeconfig}"
 
-# Determine OS platform
-OS=$(uname -s)
-
-if [ "$OS" = "Linux" ]; then
-    # Assume Linux distros with systemd (like Fedora)
-    if ! systemctl is-active --user "${systemd_scope_name}" -q; then
-        echo "🚀 Starting up a kind cluster '${kind_cluster_name}'"
-        systemctl --user reset-failed "${systemd_scope_name}"
-        systemd-run --scope --unit="${systemd_scope_name}" --user -p "Delegate=yes" \
-            kind create cluster --name provider  --kubeconfig "${KUBECONFIGS_DIR}/provider.kubeconfig"
-    fi
-elif [ "$OS" = "Darwin" ]; then
-    # macOS, which does not use systemd
-    # Check if a kind cluster is running
-    if ! pgrep -f "kind create cluster --name provider" > /dev/null; then
-        echo "🚀 Starting up a kind cluster '${kind_cluster_name}'"
-        # Start the kind cluster
-        kind create cluster --name provider --kubeconfig "${KUBECONFIGS_DIR}/provider.kubeconfig" &
-    fi
-else
-    echo "Unsupported operating system."
-fi
-
-KUBECONFIG="${KUBECONFIGS_DIR}/provider.kubeconfig" kubectl version > /dev/null
+KUBECONFIG="${kind_kubeconfig}" kubectl version > /dev/null
 
 printf "\n\t🥳 kind cluster '%s' is running! Continue with the next step: ! 💪\n\n" "${kind_cluster_name}"
