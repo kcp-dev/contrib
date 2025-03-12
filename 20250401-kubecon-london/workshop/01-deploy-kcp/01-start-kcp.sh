@@ -33,5 +33,7 @@ cp "${workshop_root}/.kcp/admin.kubeconfig" "${KUBECONFIGS_DIR}/admin.kubeconfig
 # Create a kubeconfig for the sync-agent just in case we need it
 cp "${workshop_root}/.kcp/admin.kubeconfig" "${KUBECONFIGS_DIR}/sync-agent.kubeconfig"
 
+cp "${workshop_root}/.kcp/admin.kubeconfig" "${KUBECONFIGS_DIR}/mcp-controller.kubeconfig"
+
 "${workshop_root}/01-deploy-kcp/99-highfive.sh"
 wait "${kcp_pid}"

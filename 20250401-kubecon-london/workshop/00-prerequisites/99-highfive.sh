@@ -3,7 +3,7 @@
 set -o nounset
 set -o pipefail
 
-workshop_root="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop-"
+workshop_root="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop"
 export PATH="${workshop_root}/bin:${PATH}"
 
 function check_exec {
