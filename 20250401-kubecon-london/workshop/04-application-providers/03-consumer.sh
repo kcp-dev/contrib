@@ -12,7 +12,7 @@ export exercise_dir="$(dirname "${BASH_SOURCE[0]}")"
 source "${workshop_root}/lib/kubectl.sh"
 source "${workshop_root}/lib/api-syncagent.sh"
 
-[[ -f "${workshop_root}/.checkpoint-02" ]] || { printf "\n\t📜 You need to complete the previous exercise!\n\n" ; exit 1 ; }
+# [[ -f "${workshop_root}/.checkpoint-02" ]] || { printf "\n\t📜 You need to complete the previous exercise!\n\n" ; exit 1 ; }
 
 export KUBECONFIG="${KUBECONFIGS_DIR}/admin.kubeconfig"
 

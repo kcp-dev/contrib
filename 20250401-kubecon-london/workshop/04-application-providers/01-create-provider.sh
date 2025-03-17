@@ -13,4 +13,10 @@ source "${workshop_root}/lib/kubectl.sh"
 
 [[ -f "${workshop_root}/.checkpoint-03" ]] || { printf "\n\t📜 You need to complete the previous exercise!\n\n" ; exit 1 ; }
 
-printf "\n\t🥳 You are good to go! \n\t"
+export KUBECONFIG="${KUBECONFIGS_DIR}/mcp-controller.kubeconfig"
+::kubectl::ws::use ":root:providers"
+::kubectl::ws::create_enter "application" "root:universal"
+::kubectl::create_from_file "${exercise_dir}/apis/apiresourceschema.yaml"
+::kubectl::create_from_file "${exercise_dir}/apis/export.yaml"
+
+printf "\n\t🥳 You are good to go! \n"
