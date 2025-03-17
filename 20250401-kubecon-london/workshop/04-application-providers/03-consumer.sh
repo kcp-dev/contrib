@@ -16,10 +16,11 @@ source "${workshop_root}/lib/api-syncagent.sh"
 
 export KUBECONFIG="${KUBECONFIGS_DIR}/admin.kubeconfig"
 
-
 ::kubectl::ws::use ":root:consumers:pg"
+# TODO: add flag to accept secrets
+::kubectl::kcp::bind_apiexport "root:providers:application" "apis.contrib.kcp.io" "apis.contrib.kcp.io"
 
-# TODO: bind to application provider
-# TODO: create an application
-# TODO: Access an application
+::kubectl::create_from_file "${exercise_dir}/apis/application.yaml"
+
+# TODO(Add how to port forward from the application)
 

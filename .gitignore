@@ -28,3 +28,4 @@ go.work
 **/bin
 **.tar.gz
 kcp-operator
+.checkpoint-**

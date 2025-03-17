@@ -16,4 +16,5 @@ source "${workshop_root}/lib/kubectl.sh"
 export KUBECONFIG="${KUBECONFIGS_DIR}/admin.kubeconfig"
 ::kubectl::ws::use ":root:consumers"
 ::kubectl::ws::create_enter "pg" "root:universal"
+# TODO: add flag to accept secrets and namespace
 ::kubectl::kcp::bind_apiexport "root:providers:database" "postgresql.cnpg.io" "postgresql.cnpg.io"
