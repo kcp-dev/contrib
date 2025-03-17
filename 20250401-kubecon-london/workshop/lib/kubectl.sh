@@ -49,3 +49,10 @@ function ::kubectl::apply_from_file {
   printf "\$ kubectl apply -f ${filepath}\n"
   kubectl apply --server-side -f "${filepath}"
 }
+
+function ::kubectl::wait {
+  res="${1}"
+  cond="${2}"
+  printf "\n\n✨Wait for '${res}' until '${cond}':\n"
+  printf "\$ kubectl wait ${res} --for=${cond}\n"
+}
