@@ -26,6 +26,13 @@ if [[ ! -f "${workshop_root}/bin/.checkpoint-api-syncagent" ]]; then
     touch "${workshop_root}/bin/.checkpoint-api-syncagent"
 fi
 
+if [[ ! -f "${workshop_root}/bin/.checkpoint-mcp-example-crd" ]]; then
+    echo "🚀 Downloading KCP's mcp-example-crd"
+    curl -L "https://github.com/mjudeikis/kcp-multicluster-provider-example/releases/download/v0.0.4/kcp-multicluster-provider-example_0.0.4_${GOOS}_${GOARCH}.tar.gz" \
+      | tar -C "${workshop_root}/bin" -xzf - mcp-example-crd
+    touch "${workshop_root}/bin/.checkpoint-mcp-example-crd"
+fi
+
 if [[ ! -f "${workshop_root}/bin/.checkpoint-kind" ]]; then
   echo "🚀 Downloading kind"
   curl -Lo "${workshop_root}/bin/kind" "https://github.com/kubernetes-sigs/kind/releases/download/v0.27.0/kind-${GOOS}-${GOARCH}"

@@ -19,7 +19,7 @@ check_exec "kcp" "--version"
 check_exec "kind" "version"
 check_exec "kubectl" "version --client"
 check_exec "kubectl-krew" "version"
-
+check_exec "mcp-example-crd" "-h" 2> /dev/null
 touch "${workshop_root}/.checkpoint-00"
 
 printf "\n\t🥳 High-five! Move onto the first exercise!\n\n"
