@@ -21,7 +21,7 @@ fi
 
 if [[ ! -f "${workshop_root}/bin/.checkpoint-api-syncagent" ]]; then
     echo "🚀 Downloading api-syncagent"
-    curl -L "https://github.com/kcp-dev/api-syncagent/releases/download/v0.2.0-alpha.0/api-syncagent_0.2.0-alpha.0_${GOOS}_${GOARCH}.tar.gz" \
+    curl -L "https://github.com/kcp-dev/api-syncagent/releases/download/v0.2.0-alpha.1/api-syncagent_0.2.0-alpha.1_${GOOS}_${GOARCH}.tar.gz" \
       | tar -C "${workshop_root}/bin" -xzf - api-syncagent
     touch "${workshop_root}/bin/.checkpoint-api-syncagent"
 fi
