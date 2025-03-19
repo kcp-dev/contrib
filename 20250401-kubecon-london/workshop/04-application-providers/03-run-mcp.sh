@@ -10,7 +10,6 @@ export PATH="${workshop_root}/bin/.krew/bin:${workshop_root}/bin:${PATH}"
 export KUBECONFIGS_DIR="${workshop_root}/kubeconfigs"
 export exercise_dir="$(dirname "${BASH_SOURCE[0]}")"
 source "${workshop_root}/lib/kubectl.sh"
-source "${workshop_root}/lib/api-syncagent.sh"
 
 [[ -f "${workshop_root}/.checkpoint-03" ]] || { printf "\n\t📜 You need to complete the previous exercise!\n\n" ; exit 1 ; }
 
