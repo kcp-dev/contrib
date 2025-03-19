@@ -35,6 +35,20 @@ function ::kubectl::kcp::bind_apiexport {
     kubectl kcp bind apiexport "${ws}:${apiexport}" --name "${bindname}"
 }
 
+function ::kubectl::kcp::bind_with_permission_claims {
+  ws="${1}"
+  apiexport="${2}"
+  bindname="${3}"
+  accept_permission_claim="${4}"
+  reject_permission_claim="${5}"
+  printf "\n\n✨Creating an API binding '${bindname}' that binds\n"
+  printf "  Workspace '${ws}' to APIExport '${apiexport}',\n"
+  printf "  such that permission claims '${accept_permission_claim}' are accepted, and '${reject_permission_claim}' claims are rejected:\n"
+  printf "\$ kubectl kcp bind apiexport ${ws}:${apiexport} --name ${bindname} --accept-permission-claim '${accept_permission_claim}' --reject-permission-claim '${reject_permission_claim}'\n"
+  kubectl get apibinding "${bindname}" &> /dev/null ||
+    kubectl kcp bind apiexport "${ws}:${apiexport}" --name "${bindname}" --accept-permission-claim "${accept_permission_claim}"
+}
+
 function ::kubectl::create_from_file {
   filepath="${1}"
   printf "\n\n✨Creating a resource from file '${filepath}':\n"
