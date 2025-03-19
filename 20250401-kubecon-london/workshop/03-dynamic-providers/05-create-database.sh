@@ -22,4 +22,6 @@ export KUBECONFIG="${KUBECONFIGS_DIR}/admin.kubeconfig"
 ::kubectl::wait "cluster/kcp" "condition=Ready=true"
 
 ::kubectl::create_from_file "${exercise_dir}/apis/consumer-1-database.yaml"
-::kubectl::wait "database/db-one" "condition=jsonpath='{.status.applied}'=true"
+::kubectl::wait "database/db-one" "jsonpath='{.status.applied}'=true"
+
+"${workshop_root}/03-dynamic-providers/99-highfive.sh"
