@@ -16,14 +16,14 @@ source "${workshop_root}/lib/kubectl.sh"
 ::kubectl::ws::use ":"
 
 ::kubectl::ws::create_enter "consumers" "root:organization"
-
 ::kubectl::ws::create_enter "wild-west" "root:universal"
-::kubectl::kcp::bind_apiexport "root:providers:cowboys" "cowboys" "cowboys-consumer"
+::kubectl::kcp::bind_with_permission_claims "root:providers:cowboys" "cowboys" "cowboys-consumer" "configmaps.core" ""
+
 ::kubectl::create_from_file "${exercise_dir}/apis/consumer-wild-west.yaml"
 
 ::kubectl::ws::use :root:consumers
 ::kubectl::ws::create_enter "wild-north" "root:universal"
-::kubectl::kcp::bind_apiexport "root:providers:cowboys" "cowboys" "cowboys-consumer"
+::kubectl::kcp::bind_with_permission_claims "root:providers:cowboys" "cowboys" "cowboys-consumer" "configmaps.core" ""
 ::kubectl::create_from_file "${exercise_dir}/apis/consumer-wild-north.yaml"
 
 "${workshop_root}/02-explore-workspaces/99-highfive.sh"
