@@ -19,3 +19,4 @@ kind_cluster_name='provider'
 
 rm -rf "${KUBECONFIGS_DIR}"
 rm ${workshop_root}/.checkpoint-*
+rm -rf ${workshop_root}/.kcp
