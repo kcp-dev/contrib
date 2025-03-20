@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <url>
+        <loc>https://docs.kcp.io/contrib/</loc>
+        <lastmod>2025-03-20</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.kcp.io/contrib/"/>
+    </url>
+    <url>
+        <loc>https://docs.kcp.io/contrib/Learning/</loc>
+        <lastmod>2025-03-20</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.kcp.io/contrib/Learning/"/>
+    </url>
+    <url>
+        <loc>https://docs.kcp.io/contrib/Learning/20240321-kubecon-paris/</loc>
+        <lastmod>2025-03-20</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.kcp.io/contrib/Learning/20240321-kubecon-paris/"/>
+    </url>
+</urlset>

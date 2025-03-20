@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: training
+  name: training
+  namespace: ml
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: training
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: training
+    spec:
+      containers:
+      - image: ghcr.io/faroshq/kcp-ml-shop:latest
+        imagePullPolicy: Always
+        command: ["/controller"]
+        args:
+        - start
+        - --kubeconfig=/kubeconfig/kcp.kubeconfig
+        name: kcp-ml-shop
+        volumeMounts:
+        - name: kubeconfig
+          mountPath: /kubeconfig
+          readOnly: true
+      volumes:
+      - name: kubeconfig
+        secret:
+          secretName: kubeconfig

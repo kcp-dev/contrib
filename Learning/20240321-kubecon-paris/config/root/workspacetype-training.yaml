@@ -1,0 +1,12 @@
+apiVersion: tenancy.kcp.io/v1alpha1
+kind: WorkspaceType
+metadata:
+  name: ml-training
+spec:
+  extend:
+    with:
+    - name: universal
+      path: root
+  defaultAPIBindings:
+  - path: root:ml:training
+    export: training.faros.sh
