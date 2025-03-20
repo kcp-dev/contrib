@@ -19,7 +19,7 @@ function ::kind::create::cluster {
 
   create_cmd="kind create cluster --name ${name} --kubeconfig ${kubeconfig_path}"
 
-  if [ "$(uname -s)" = "Linux" ]; then
+  if [ "$(uname -s)" = "Linux" ] && [ -n "${DBUS_SESSION_BUS_ADDRESS-}" ]; then
     # Assuming we're on a systemd system.
     # In certain environments (e.g. Fedora with podman), there may be
     # issues with running kind in rootless mode. Containing it in a
@@ -43,7 +43,7 @@ function ::kind::delete::cluster {
 
   kind delete cluster --name "${name}" || true
 
-  if [ "$(uname -s)" = "Linux" ]; then
+  if [ "$(uname -s)" = "Linux" ] && [ -n "${DBUS_SESSION_BUS_ADDRESS-}" ]; then
     # Clean the scope created in ::kind::create::cluster.
     systemctl --user stop "${kind_service_name}"
     systemctl --user reset-failed "${kind_service_name}"
