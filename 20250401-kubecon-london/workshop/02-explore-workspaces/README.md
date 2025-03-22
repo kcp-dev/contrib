@@ -16,17 +16,19 @@ Workspaces, or kcp for that matter, is not something that vanilla kubectl knows 
     === "Bash/ZSH"
 
         ```shell
-        export WORKSHOP_ROOT="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop-"
-        export KREW_ROOT="${workshop_root}/bin/.krew"
+        export WORKSHOP_ROOT="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop"
+        export KREW_ROOT="${WORKSHOP_ROOT}/bin/.krew"
         export PATH="${WORKSHOP_ROOT}/bin/.krew/bin:${WORKSHOP_ROOT}/bin:${PATH}"
+        export KUBECONFIG=${WORKSHOP_ROOT}/kubeconfigs/admin.kubeconfig
         ```
 
     === "Fish"
 
         ```fish
-        set -gx WORKSHOP_ROOT (git rev-parse --show-toplevel)/20250401-kubecon-london/workshop-
+        set -gx WORKSHOP_ROOT (git rev-parse --show-toplevel)/20250401-kubecon-london/workshop
         set -gx KREW_ROOT $WORKSHOP_ROOT/bin/.krew
         set -gx PATH $WORKSHOP_ROOT/bin/.krew/bin $WORKSHOP_ROOT/bin $PATH"
+        set KUBECONFIG $WORKSHOP_ROOT/kubeconfigs/admin.kubeconfig"
         ```
 
 ```shell
@@ -34,6 +36,9 @@ kubectl krew index add kcp-dev https://github.com/kcp-dev/krew-index.git
 kubectl krew install kcp-dev/kcp
 kubectl krew install kcp-dev/ws
 kubectl krew install kcp-dev/create-workspace
+# IMPORTANT HACK: https://github.com/kubernetes-sigs/krew/issues/865
+cp $(which kubectl-create_workspace) $KREW_ROOT/bin/kubectl-create-workspace
+
 ```
 
 Now you should be able to run and inspect these commands:
@@ -60,24 +65,6 @@ $ kubectl kcp --help
 With that, let's create some workspaces!
 
 ## Sprawling workspaces
-
-!!! Important
-
-    === "Bash/ZSH"
-
-        ```shell
-        export WORKSHOP_ROOT="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop-"
-        export KREW_ROOT="${WORKSHOP_ROOT}/bin/.krew"
-        export PATH="${workshop_root}/bin/.krew/bin:${workshop_root}/bin:${PATH}"
-        ```
-
-    === "Fish"
-
-        ```fish
-        set -gx WORKSHOP_ROOT (git rev-parse --show-toplevel)/20250401-kubecon-london/workshop-
-        set -gx KREW_ROOT $WORKSHOP_ROOT/bin/.krew
-        set -gx PATH $WORKSHOP_ROOT/bin/.krew/bin $WORKSHOP_ROOT/bin $PATH"
-        ```
 
 We'll be using `kubectl create workspace` command:
 
@@ -125,7 +112,7 @@ kubectl ws tree
 
 You should get output similar to this:
 
-```
+```shell
 .
 └── root
     ├── one
@@ -148,11 +135,11 @@ Create `providers` and `providers:cowboys` workspaces:
 
 ```shell
 kubectl ws use :
-kubectl ws create providers --enter
-kubectl ws create cowboys --enter
+kubectl create workspace providers --enter
+kubectl create create cowboys --enter
 ```
 
-```shell-session
+```shell
 $ kubectl ws use :
 Current workspace is 'root'.
 $ kubectl ws tree
@@ -214,13 +201,13 @@ With the provider in place, let's create two consumers in their own workspaces, 
 kubectl ws use :
 kubectl create workspace consumers --enter
 kubectl create workspace wild-west --enter
-kubectl kcp bind apiexport root:providers:cowboys:cowboys --name cowboys-consumer
+kubectl kcp bind apiexport root:providers:cowboys:cowboys --name cowboys-consumer --accept-permission-claim configmaps.core
 kubectl create -f $WORKSHOP_ROOT/02-explore-workspaces/apis/consumer-wild-west.yaml
 ```
 
 Let's check the Cowboy we have created:
 
-```shell-session
+```shell
 $ kubectl get cowboy buckaroo-bill -o json
 {
     "apiVersion": "wildwest.dev/v1alpha1",
@@ -247,11 +234,11 @@ And the second consumer, "wild-north":
 ```shell
 kubectl ws use ..
 kubectl create workspace wild-north --enter
-kubectl kcp bind apiexport root:providers:cowboys:cowboys --name cowboys-consumer
+kubectl kcp bind apiexport root:providers:cowboys:cowboys --name cowboys-consumer --accept-permission-claim configmaps.core
 kubectl create -f $WORKSHOP_ROOT/02-explore-workspaces/apis/consumer-wild-north.yaml
 ```
 
-```shell-session
+```shell
 $ kubectl get cowboy hold-the-wall -o json
 {
     "apiVersion": "wildwest.dev/v1alpha1",
@@ -275,7 +262,7 @@ $ kubectl get cowboy hold-the-wall -o json
 
 Great! We have created two instances of a common API, and were able to create a couple of dummy objects with it.
 
-```shell-session
+```shell
 $ kubectl ws use :
 Current workspace is 'root'.
 $ kubectl ws tree

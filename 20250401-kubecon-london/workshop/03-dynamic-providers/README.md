@@ -18,19 +18,19 @@ Excited? Let's get down to it!
     === "Bash/ZSH"
 
         ```shell
-        export WORKSHOP_ROOT="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop-"
+        export WORKSHOP_ROOT="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop"
         export EXERCISE_DIR="${WORKSHOP_ROOT}/03-dynamic-providers"
-        export KUBECONFIGS_DIR="${workshop_root}/kubeconfigs"
-        export KREW_ROOT="${workshop_root}/bin/.krew"
+        export KUBECONFIGS_DIR="${WORKSHOP_ROOT}/kubeconfigs"
+        export KREW_ROOT="${WORKSHOP_ROOT}/bin/.krew"
         export PATH="${WORKSHOP_ROOT}/bin/.krew/bin:${WORKSHOP_ROOT}/bin:${PATH}"
         ```
 
     === "Fish"
 
         ```fish
-        set -gx WORKSHOP_ROOT (git rev-parse --show-toplevel)/20250401-kubecon-london/workshop-
+        set -gx WORKSHOP_ROOT (git rev-parse --show-toplevel)/20250401-kubecon-london/workshop
         set -gx EXERCISE_DIR $WORKSHOP_ROOT/03-dynamic-providers
-        set -gx KUBECONFIGS_DIR "${workshop_root}/kubeconfigs"
+        set -gx KUBECONFIGS_DIR "${WORKSHOP_ROOT}/kubeconfigs"
         set -gx KREW_ROOT $WORKSHOP_ROOT/bin/.krew
         set -gx PATH $WORKSHOP_ROOT/bin/.krew/bin $WORKSHOP_ROOT/bin $PATH"
         ```
@@ -64,7 +64,7 @@ Surprise! You've just been appointed as the owner of a company responsible for r
 
 Once the cluster is created, you can verify it's working with kubectl:
 
-```shell-session
+```shell
 $ KUBECONFIG=$KUBECONFIGS_DIR/provider.kubeconfig kubectl version
 Client Version: v1.32.2
 Kustomize Version: v5.5.0
@@ -132,7 +132,7 @@ If you're curious, you may go ahead and inspect the file and/or the object that 
 ```shell
 kubectl ws :root:consumers
 kubectl ws create pg --enter
-kubectl kcp bind apiexport root:providers:database:postgresql.cnpg.io --accept-permission-claim secrets.core
+kubectl kcp bind apiexport root:providers:database:postgresql.cnpg.io --accept-permission-claim secrets.core,namespaces.core
 ```
 
 We've created a workspace `:root:consumers:pg`. The APIExport needs permissions to secrets, as it will store the authentication credentials for the databases we'll create, hence the permission claim flag.
@@ -186,6 +186,32 @@ And that's it! The only thing left for us to do is to run the controller itself.
 api-syncagent --namespace default --apiexport-ref postgresql.cnpg.io --kcp-kubeconfig=$KUBECONFIGS_DIR/sync-agent.kubeconfig
 ```
 
+At this point we have 2 shells running long running operations. Lets open 3rd one.
+
+!!! Important
+
+    === "Bash/ZSH"
+
+        ```shell
+        export WORKSHOP_ROOT="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop"
+        export EXERCISE_DIR="${WORKSHOP_ROOT}/03-dynamic-providers"
+        export KUBECONFIGS_DIR="${WORKSHOP_ROOT}/kubeconfigs"
+        export KREW_ROOT="${WORKSHOP_ROOT}/bin/.krew"
+        export PATH="${WORKSHOP_ROOT}/bin/.krew/bin:${WORKSHOP_ROOT}/bin:${PATH}"
+        export KUBECONFIG="${KUBECONFIGS_DIR}/admin.kubeconfig"
+        ```
+
+    === "Fish"
+
+        ```fish
+        set -gx WORKSHOP_ROOT (git rev-parse --show-toplevel)/20250401-kubecon-london/workshop
+        set -gx EXERCISE_DIR $WORKSHOP_ROOT/03-dynamic-providers
+        set -gx KUBECONFIGS_DIR "${WORKSHOP_ROOT}/kubeconfigs"
+        set -gx KREW_ROOT $WORKSHOP_ROOT/bin/.krew
+        set -gx PATH $WORKSHOP_ROOT/bin/.krew/bin $WORKSHOP_ROOT/bin $PATH"
+        set -gx KUBECONFIG ${KUBECONFIGS_DIR}/admin.kubeconfig
+        ```
+
 At the very beginning of this exercise we've made a copy of `admin.kubeconfig` into `sync-agent.kubeconfig` and using that we've created the `:root:providers:database` workspace. If you are wondering how does api-syncagent know where it can find the prepared APIExport, this is how. The kubeconfig has its context set to that workspace's endpoint. Now, leave the controller running and let's go create some databases finally!
 
 !!! tip "Bonus step"
@@ -214,10 +240,26 @@ Bam! You've just been promoted to a consumer! You don't have an application to r
 
 ```shell
 kubectl apply -f $EXERCISE_DIR/apis/consumer-1-cluster.yaml
+# get cluster to wait for status:
+kubectl get cluster
+NAME   AGE   INSTANCES   READY   STATUS               PRIMARY
+kcp    27s   1                   Setting up primary   
+
+# IMPORTANT: WAIT UNTIL IT SHOWS: Cluster in healthy state
+kubectl get cluster
+NAME   AGE   INSTANCES   READY   STATUS                     PRIMARY
+kcp    50s   1           1       Cluster in healthy state   kcp-1
+
 kubectl apply -f $EXERCISE_DIR/apis/consumer-1-database.yaml
 ```
 
-And just like that, we have a PostgreSQL server with a database, that somebody else is running.
+on kcp side we see check and we are just one consumer `pg` and have database instance in our workspace
+`root:consumers:pg`. Nothing stops us to creating more. But we gonna limit ourselfs to 1 consumer in this workshop.
+
+Feel free to explore and create more consumers after the workshop!
+
+
+And just like that, we have a PostgreSQL server with a database, that somebody else is running
 
 <div class="grid" markdown>
 
@@ -268,6 +310,7 @@ What can we do with it? You may recall that there were Secrets involved in the p
 <div class="grid" markdown>
 
 ```shell-session title="port forward"
+export KUBECONFIG=$KUBECONFIGS_DIR/provider.kubeconfig
 $ # Pretending to have an Ingress by port-forwarding in a separate terminal.
 $ # Note that the "kcp-rw" service is created by the cnpg operator, and that the "kcp" in the name comes from the PostgreSQL cluster name.
 $ kubectl -n 1yaxsslokc5aoqme port-forward svc/kcp-rw 5432:5432
@@ -288,7 +331,7 @@ Handling connection for 8080
 $ export KUBECONFIG=$KUBECONFIGS_DIR/admin.kubeconfig
 $ export pg_username="$(kubectl get secret kcp-superuser -o jsonpath='{.data.username}' | base64 -d)"
 $ export pg_password="$(kubectl get secret kcp-superuser -o jsonpath='{.data.password}' | base64 -d)"
-$ podman run -it --rm --network=host --env PGPASSWORD=$pg_password postgres psql -h 127.0.0.1 -d one -U postgres
+$ docker run -it --rm --network=host --env PGPASSWORD=$pg_password postgres psql -h 127.0.0.1 -d one -U postgres
 psql (17.4 (Debian 17.4-1.pgdg120+2))
 SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, compression: off, ALPN: postgresql)
 Type "help" for help.

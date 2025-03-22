@@ -18,4 +18,7 @@ kubectl krew install kcp-dev/kcp
 kubectl krew install kcp-dev/ws
 kubectl krew install kcp-dev/create-workspace
 
+# IMPORTANT HACK: https://github.com/kubernetes-sigs/krew/issues/865
+cp $(which kubectl-create_workspace) $KREW_ROOT/bin/kubectl-create-workspace
+
 printf "\n\t🥳 krew plugins installed successfully! Continue with the next step, creating provider APIs! 💪\n\n"

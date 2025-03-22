@@ -29,10 +29,10 @@ The Application brought to you by **SQL<sup>3</sup> Co.** has a CRD definition a
     === "Bash/ZSH"
 
         ```shell
-        export WORKSHOP_ROOT="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop-"
-        export EXERCISE_DIR="${WORKSHOP_ROOT}/03-dynamic-providers"
-        export KUBECONFIGS_DIR="${workshop_root}/kubeconfigs"
-        export KREW_ROOT="${workshop_root}/bin/.krew"
+        export WORKSHOP_ROOT="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop"
+        export EXERCISE_DIR="${WORKSHOP_ROOT}/04-application-providers"
+        export KUBECONFIGS_DIR="${WORKSHOP_ROOT}/kubeconfigs"
+        export KREW_ROOT="${WORKSHOP_ROOT}/bin/.krew"
         export PATH="${WORKSHOP_ROOT}/bin/.krew/bin:${WORKSHOP_ROOT}/bin:${PATH}"
 
         # Stashing our admin.kubeconfig away for when we deploy the multicluster provider.
@@ -43,9 +43,9 @@ The Application brought to you by **SQL<sup>3</sup> Co.** has a CRD definition a
     === "Fish"
 
         ```fish
-        set -gx WORKSHOP_ROOT (git rev-parse --show-toplevel)/20250401-kubecon-london/workshop-
-        set -gx EXERCISE_DIR $WORKSHOP_ROOT/03-dynamic-providers
-        set -gx KUBECONFIGS_DIR "${workshop_root}/kubeconfigs"
+        set -gx WORKSHOP_ROOT (git rev-parse --show-toplevel)/20250401-kubecon-london/workshop
+        set -gx EXERCISE_DIR $WORKSHOP_ROOT/04-application-providers
+        set -gx KUBECONFIGS_DIR "${WORKSHOP_ROOT}/kubeconfigs"
         set -gx KREW_ROOT $WORKSHOP_ROOT/bin/.krew
         set -gx PATH $WORKSHOP_ROOT/bin/.krew/bin $WORKSHOP_ROOT/bin $PATH"
 
@@ -57,7 +57,7 @@ The Application brought to you by **SQL<sup>3</sup> Co.** has a CRD definition a
 We'll use `:root:providers:application` workspace for our pgAdmin app export:
 
 ```shell
-kubectl ws :root:providers
+kubectl ws use :root:providers
 kubectl ws create application --enter
 kubectl apply -f $EXERCISE_DIR/apis/apiresourceschema.yaml
 kubectl apply -f $EXERCISE_DIR/apis/export.yaml
@@ -67,7 +67,7 @@ And now a consumer:
 
 ```shell
 kubectl ws :root:consumers:pg
-kubectl kcp bind apiexport :root:providers:application:apis.contrib.kcp.io --accept-permission-claim secrets.core
+kubectl kcp bind apiexport root:providers:application:apis.contrib.kcp.io --accept-permission-claim secrets.core
 kubectl apply -f $EXERCISE_DIR/apis/application.yaml
 ```
 
@@ -87,12 +87,15 @@ spec:
 It references the database we've created earlier, and the Secret with credentials to access it. Meanwhile, a word has got out to **SQL<sup>3</sup> Co.** that we are ready to use their fancy new Application reconciler, and so they ran this command--in a separate terminal and just left it running:
 
 ```shell title="Starting the mcp-app"
+kubectl ws use :root:providers:application
 mcp-example-crd --server=$(kubectl get apiexport apis.contrib.kcp.io -o jsonpath="{.status.virtualWorkspaces[0].url}") \
   --provider-kubeconfig ${KUBECONFIGS_DIR}/provider.kubeconfig
 ```
 
 ```shell-session title="View of the service owner cluster"
 $ export KUBECONFIG=$KUBECONFIGS_DIR/provider.kubeconfig
+$ kubectl get namespaces
+# get namespace inquestion
 $ KUBECONFIG=$KUBECONFIGS_DIR/provider.kubeconfig kubectl -n 1yaxsslokc5aoqme get all
 NAME                                   READY   STATUS    RESTARTS   AGE
 pod/application-kcp-578c5dd4df-fwlgw   1/1     Running   0          29s
@@ -132,13 +135,15 @@ $ kubectl get application application-kcp -o json
 
 Now that's some weird connection string! Similar to what we did in the previous exercise, we didn't want to have our demo setup too complex, and so for the sake of brevity, let's pretend that port forwarding is an actual Ingress, and open up the connection.
 
+
+
 ```shell
 KUBECONFIG=$KUBECONFIGS_DIR/provider.kubeconfig kubectl port-forward svc/application-kcp 8080:8080 -n 1yaxsslokc5aoqme
 ```
 
 ### Drum-roll 🥁🥁🥁
 
-The last thing for you to do is to open up your browser, and visit `localhost:8080`.
+The last thing for you to do is to open up your browser, and visit `localhost:8080` using web-previou tab in google shell or your machine!
 
 ## High-five! 🚀🚀🚀
 

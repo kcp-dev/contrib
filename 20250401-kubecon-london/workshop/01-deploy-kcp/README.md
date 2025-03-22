@@ -17,42 +17,43 @@ kcp may be deployed via a [Helm chart](https://github.com/kcp-dev/helm-charts), 
     === "Bash/ZSH"
 
         ```shell
-        export WORKSHOP_ROOT="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop-"
+        export WORKSHOP_ROOT="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop"
         export PATH="${WORKSHOP_ROOT}/bin:${PATH}"
         ```
 
     === "Fish"
 
         ```fish
-        set WORKSHOP_ROOT (git rev-parse --show-toplevel)/20250401-kubecon-london/workshop-
+        set WORKSHOP_ROOT (git rev-parse --show-toplevel)/20250401-kubecon-london/workshop
         set PATH $WORKSHOP_ROOT/bin $PATH
         ```
 
-Starting kcp in standalone mode is as easy as typing `kcp start` and pressing Enter:
+Starting kcp in standalone mode is as easy as typing `kcp start` and pressing Enter.
 
 ```shell
-kcp start
+cd $WORKSHOP_ROOT && kcp start
 ```
+
 
 You should see the program running indefinitely, and outputting its logs--starting with some errors that should clean up in a couple of seconds as the different controllers start up. Leave the terminal window open, as we will keep using this kcp instance throughout the duration of the workshop. In this mode, all kcp's state is in-memory only. That means exiting the process (by, for example, pressing _Ctrl+C_ in this terminal), will lose all its etcd contents.
 
 Once kcp's output seems stable, we can start making simple kubectl calls against it. `kcp start` creates a hidden directory `.kcp`, where it places its kubeconfig and the certificates.
 
-Open a new terminal now.
+Open a new terminal (termianl 2, same 01-deploy-kcp directory) now.
 
 !!! Important
 
     === "Bash/ZSH"
 
         ```shell
-        export WORKSHOP_ROOT="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop-"
-        export KUBECONFIG="${workshop_root}/.kcp/admin.kubeconfig"
+        export WORKSHOP_ROOT="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop"
+        export KUBECONFIG="${WORKSHOP_ROOT}/.kcp/admin.kubeconfig"
         ```
 
     === "Fish"
 
         ```fish
-        set WORKSHOP_ROOT (git rev-parse --show-toplevel)/20250401-kubecon-london/workshop-
+        set WORKSHOP_ROOT (git rev-parse --show-toplevel)/20250401-kubecon-london/workshop
         set KUBECONFIG $WORKSHOP_ROOT/.kcp/admin.kubeconfig"
         ```
 
@@ -68,7 +69,7 @@ Server Version: v1.31.0+kcp-v0.26.1
 We'll have a couple more kubeconfigs to switch between, and it will be convenient to have them all in one place. Let's do that now:
 
 ```shell
-mkdir $WORKSHOP_ROOT/kubeconfigs
+mkdir -p $WORKSHOP_ROOT/kubeconfigs
 ln -s $KUBECONFIG $WORKSHOP_ROOT/kubeconfigs
 ```
 

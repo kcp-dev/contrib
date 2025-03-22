@@ -9,8 +9,11 @@ In this chapter we'll set up our workshop-dedicated development environment.
 
 Start by cloning the git repository we'll refer to throughout the workshop, and will be the place for the binaries, scripts and kubeconfigs we will create as we move forward.
 
+Important: We will need 4 terminal windows for long running programs & interactions to the same underlaying machine during this workshop.
+
 ```shell
-git clone git@github.com:mjudeikis/kcp-contrib.git
+git clone -b mjudeikis/kubecon.eu.workshop https://github.com/mjudeikis/kcp-contrib.git
+cd 20250401-kubecon-london/workshop/
 ```
 
 Now, let's see what's inside.
@@ -31,9 +34,11 @@ This one is easy. During the workshop we will make use of these programs:
 
 * [kcp](https://github.com/kcp-dev/kcp/releases/latest),
 * kcp's [api-syncagent](https://github.com/kcp-dev/api-syncagent/releases/latest),
+* kcp's [multicluster-controller runtime example binary](kcp-multicluster-provider-example),
 * [kind](https://github.com/kubernetes-sigs/kind/releases/latest),
 * [kubectl](https://kubernetes.io/docs/tasks/tools/),
 * and, [kubectl-krew](https://krew.sigs.k8s.io/docs/user-guide/setup/install/).
+
 
 You may visit the links, download and extract the respective binaries to a new directory called `bin/` in the workshop's root (e.g., `$WORKSHOP/bin/kubectl`). If you already have some of these installed and available in your `$PATH`, you may skip them--just make sure they are up-to-date.
 
