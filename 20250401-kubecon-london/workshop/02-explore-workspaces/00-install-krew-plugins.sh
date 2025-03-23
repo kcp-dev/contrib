@@ -4,12 +4,9 @@ set -o nounset
 set -o pipefail
 set -o errexit
 
-export workshop_root="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop"
-export KREW_ROOT="${workshop_root}/bin/.krew"
-export PATH="${workshop_root}/bin/.krew/bin:${workshop_root}/bin:${PATH}"
-export KUBECONFIG="${workshop_root}/.kcp/admin.kubeconfig"
+source "$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop/lib/env.sh" "$(cd "$(dirname "$0")" && pwd)"
 
-[[ -f "${workshop_root}/.checkpoint-01" ]] || { printf "\n\t📜 You need to complete the previous exercise!\n\n" ; exit 1 ; }
+[[ -f "${WORKSHOP_ROOT}/.checkpoint-01" ]] || { printf "\n\t📜 You need to complete the previous exercise!\n\n" ; exit 1 ; }
 
 [[ -z "$(kubectl krew index list | grep 'github.com/kcp-dev/krew-index.git')" ]] \
   && kubectl krew index add kcp-dev https://github.com/kcp-dev/krew-index.git

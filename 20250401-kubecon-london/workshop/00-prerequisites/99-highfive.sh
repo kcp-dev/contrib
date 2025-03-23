@@ -3,8 +3,7 @@
 set -o nounset
 set -o pipefail
 
-workshop_root="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop"
-export PATH="${workshop_root}/bin:${PATH}"
+source "$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop/lib/env.sh" "$(cd "$(dirname "$0")" && pwd)"
 
 function check_exec {
   prog="${1}"
@@ -20,6 +19,6 @@ check_exec "kind" "version"
 check_exec "kubectl" "version --client"
 check_exec "kubectl-krew" "version"
 check_exec "mcp-example-crd" "-h" 2> /dev/null
-touch "${workshop_root}/.checkpoint-00"
+touch "${WORKSHOP_ROOT}/.checkpoint-00"
 
 printf "\n\t🥳 High-five! Move onto the first exercise!\n\n"

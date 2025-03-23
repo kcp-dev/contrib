@@ -4,10 +4,6 @@ set -o nounset
 set -o pipefail
 set -o errexit
 
-export workshop_root="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop"
-export KREW_ROOT="${workshop_root}/bin/.krew"
-export PATH="${workshop_root}/bin/.krew/bin:${workshop_root}/bin:${PATH}"
-
 function ::apisyncagent {
   apiexport_name="${1}"
   kcp_kubeconfig="${2}"
