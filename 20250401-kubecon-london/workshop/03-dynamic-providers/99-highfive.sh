@@ -19,6 +19,7 @@ function try_or_err {
 }
 
 export KUBECONFIG="${KUBECONFIGS_DIR}/provider.kubeconfig"
+try_or_err "kubectl api-resources" "provider cluster up and running"
 try_or_err "kubectl api-resources | grep postgresql.cnpg.io/v1" "PostgreSQL API available in provider cluster"
 
 export KUBECONFIG="${KUBECONFIGS_DIR}/admin.kubeconfig"

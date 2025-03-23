@@ -14,7 +14,10 @@ source "${workshop_root}/lib/api-syncagent.sh"
 
 [[ -f "${workshop_root}/.checkpoint-02" ]] || { printf "\n\t📜 You need to complete the previous exercise!\n\n" ; exit 1 ; }
 
+kind_cluster_name='provider'
 export KUBECONFIG="${KUBECONFIGS_DIR}/provider.kubeconfig"
-::apisyncagent "postgresql.cnpg.io" "${KUBECONFIGS_DIR}/sync-agent.kubeconfig" "default"
+
+pgrep api-syncagent &> /dev/null \
+  || ::apisyncagent "postgresql.cnpg.io" "${KUBECONFIGS_DIR}/sync-agent.kubeconfig" "default"
 
 printf "\n\t🥳 PostgreSQL is now running in kind cluster 'provider'! Continue with the next step: ! 💪\n\n" "${kind_cluster_name}"

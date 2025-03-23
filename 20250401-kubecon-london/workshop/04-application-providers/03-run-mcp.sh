@@ -15,5 +15,7 @@ source "${workshop_root}/lib/kubectl.sh"
 
 export KUBECONFIG="${KUBECONFIGS_DIR}/mcp-controller.kubeconfig"
 ::kubectl::ws::use ":root:providers:application"
-mcp-example-crd --server=$(kubectl get apiexport apis.contrib.kcp.io -o jsonpath="{.status.virtualWorkspaces[0].url}") \
-  --provider-kubeconfig ${KUBECONFIGS_DIR}/provider.kubeconfig
+
+pgrep mcp-example-crd &> /dev/null \
+  || mcp-example-crd --server=$(kubectl get apiexport apis.contrib.kcp.io -o jsonpath="{.status.virtualWorkspaces[0].url}") \
+    --provider-kubeconfig ${KUBECONFIGS_DIR}/provider.kubeconfig

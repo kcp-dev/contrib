@@ -19,6 +19,8 @@ function ::kind::create::cluster {
 
   create_cmd="kind create cluster --name ${name} --kubeconfig ${kubeconfig_path}"
 
+  kind get clusters 2> /dev/null | grep "${name}" > /dev/null && return
+
   if [ "$(uname -s)" = "Linux" ] && [ -n "${DBUS_SESSION_BUS_ADDRESS-}" ]; then
     # Assuming we're on a systemd system.
     # In certain environments (e.g. Fedora with podman), there may be

@@ -19,9 +19,11 @@ export KUBECONFIG="${KUBECONFIGS_DIR}/admin.kubeconfig"
 ::kubectl::ws::use ":root:consumers:pg"
 
 ::kubectl::create_from_file "${exercise_dir}/apis/consumer-1-cluster.yaml"
-::kubectl::wait "cluster/kcp" "condition=Ready=true"
+::kubectl::wait "cluster/kcp" "condition=Ready=true" "5m"
+
+
 
 ::kubectl::create_from_file "${exercise_dir}/apis/consumer-1-database.yaml"
-::kubectl::wait "database/db-one" "jsonpath='{.status.applied}'=true"
+::kubectl::wait "database/db-one" "jsonpath={.status.applied}=true" "5m"
 
 "${workshop_root}/03-dynamic-providers/99-highfive.sh"

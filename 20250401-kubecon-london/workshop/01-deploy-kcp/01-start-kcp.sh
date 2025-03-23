@@ -22,6 +22,8 @@ function try_with_timeout {
   exit 1
 }
 
+pgrep kcp &> /dev/null && { "${workshop_root}/01-deploy-kcp/99-highfive.sh" ; exit $? ; }
+
 cd "${workshop_root}"
 
 kcp start & kcp_pid=$!

@@ -67,6 +67,8 @@ function ::kubectl::apply_from_file {
 function ::kubectl::wait {
   res="${1}"
   cond="${2}"
-  printf "\n\n✨Wait for '${res}' until '${cond}':\n"
-  printf "\$ kubectl wait ${res} --for=${cond}\n"
+  timeout="${3}"
+  printf "\n\n✨Wait ${timeout} for '${res}' to have '${cond}':\n"
+  printf "\$ kubectl wait ${res} --for=${cond} --timeout=${timeout}\n"
+  kubectl wait "${res}" --for="${cond}" --timeout="${timeout}"
 }
