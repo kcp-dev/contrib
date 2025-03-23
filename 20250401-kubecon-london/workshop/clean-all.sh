@@ -10,6 +10,7 @@ source "${WORKSHOP_ROOT}/lib/kind.sh"
 set +o errexit
 
 pkill api-syncagent && echo "🥷 stopped api-syncagent"
+pkill mcp-example-crd && echo "🥷 stopped mcp-example-crd"
 pkill kcp && echo "🥷 stopped kcp"
 
 ::kind::delete::cluster "provider"
