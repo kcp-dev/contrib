@@ -5,7 +5,7 @@ set -o pipefail
 
 source "$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop/lib/env.sh" "$(cd "$(dirname "$0")" && pwd)"
 source "${WORKSHOP_ROOT}/lib/kubectl.sh"
-export KUBECONFIG="${KUBECONFIGS_DIR}/admin.kubeconfig"
+export KUBECONFIG="${KUBECONFIGS_DIR}/internal-checkscript.kubeconfig"
 
 kubectl ws use ":" > /dev/null
 kubectl get ws consumers > /dev/null
