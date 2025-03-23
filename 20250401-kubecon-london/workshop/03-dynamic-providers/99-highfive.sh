@@ -4,10 +4,8 @@ set -o nounset
 set -o pipefail
 set -o errexit
 
-export workshop_root="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop"
-export PATH="${workshop_root}/bin:${PATH}"
-export KUBECONFIGS_DIR="${workshop_root}/kubeconfigs"
-source "${workshop_root}/lib/kubectl.sh"
+source "$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop/lib/env.sh" "$(cd "$(dirname "$0")" && pwd)"
+source "${WORKSHOP_ROOT}/lib/kubectl.sh"
 
 function try_or_err {
   shell_script="${1}"
@@ -28,5 +26,5 @@ try_or_err "kubectl get apibinding postgresql.cnpg.io" "APIBinding postgresql.cn
 try_or_err "kubectl wait cluster/kcp '--for=condition=Ready=true' --timeout=0" "kcp PostgreSQL cluster exists in the consumer workspace"
 try_or_err "kubectl wait database/db-one '--for=jsonpath={.status.applied}=true' --timeout=0" "db-one PostgreSQL database exists in the consumer workspace"
 
-touch "${workshop_root}/.checkpoint-03"
+touch "${WORKSHOP_ROOT}/.checkpoint-03"
 printf "\n\t🥳 High-five! Move onto the fourth exercise!\n\n"

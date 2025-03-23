@@ -4,12 +4,9 @@ set -o nounset
 set -o pipefail
 set -o errexit
 
-export workshop_root="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop"
-export PATH="${workshop_root}/bin:${PATH}"
-export KUBECONFIG="${workshop_root}/.kcp/admin.kubeconfig"
-export KUBECONFIGS_DIR="${workshop_root}/kubeconfigs"
+source "$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop/lib/env.sh" "$(cd "$(dirname "$0")" && pwd)"
 
-[[ -f "${workshop_root}/.checkpoint-00" ]] || { printf "\n\t📜 You need to complete the previous exercise!\n\n" ; exit 1 ; }
+[[ -f "${WORKSHOP_ROOT}/.checkpoint-00" ]] || { printf "\n\t📜 You need to complete the previous exercise!\n\n" ; exit 1 ; }
 
 function try_with_timeout {
   attempts=15
@@ -22,20 +19,20 @@ function try_with_timeout {
   exit 1
 }
 
-pgrep kcp &> /dev/null && { "${workshop_root}/01-deploy-kcp/99-highfive.sh" ; exit $? ; }
+pgrep kcp &> /dev/null && { "${EXERCISE_DIR}/99-highfive.sh" ; exit $? ; }
 
-cd "${workshop_root}"
+cd "${WORKSHOP_ROOT}"
 
 kcp start & kcp_pid=$!
 trap 'kill -TERM ${kcp_pid}' TERM INT EXIT
+export KUBECONFIG="${WORKSHOP_ROOT}/.kcp/admin.kubeconfig"
 try_with_timeout
 
 mkdir -p "${KUBECONFIGS_DIR}"
-cp "${workshop_root}/.kcp/admin.kubeconfig" "${KUBECONFIGS_DIR}/admin.kubeconfig"
-# Create a kubeconfig for the sync-agent just in case we need it
-cp "${workshop_root}/.kcp/admin.kubeconfig" "${KUBECONFIGS_DIR}/sync-agent.kubeconfig"
 
-cp "${workshop_root}/.kcp/admin.kubeconfig" "${KUBECONFIGS_DIR}/mcp-controller.kubeconfig"
+cp "${WORKSHOP_ROOT}/.kcp/admin.kubeconfig" "${KUBECONFIGS_DIR}/admin.kubeconfig"
+cp "${WORKSHOP_ROOT}/.kcp/admin.kubeconfig" "${KUBECONFIGS_DIR}/sync-agent.kubeconfig"
+cp "${WORKSHOP_ROOT}/.kcp/admin.kubeconfig" "${KUBECONFIGS_DIR}/mcp-controller.kubeconfig"
 
-"${workshop_root}/01-deploy-kcp/99-highfive.sh"
+"${EXERCISE_DIR}/99-highfive.sh"
 wait "${kcp_pid}"
