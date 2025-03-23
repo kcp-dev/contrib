@@ -4,7 +4,7 @@ set -o nounset
 set -o pipefail
 
 source "$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop/lib/env.sh" "$(cd "$(dirname "$0")" && pwd)"
-export KUBECONFIG="${KUBECONFIGS_DIR}/admin.kubeconfig"
+export KUBECONFIG="${KUBECONFIGS_DIR}/internal-checkscript.kubeconfig"
 
 kubectl version &> /dev/null || { printf "\n\t❌It seems kcp is down :( !\n\n" ; exit 1 ; }
 printf "\t ✅ kcp is up and running!\n"

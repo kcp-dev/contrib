@@ -31,6 +31,7 @@ try_with_timeout
 mkdir -p "${KUBECONFIGS_DIR}"
 
 cp "${WORKSHOP_ROOT}/.kcp/admin.kubeconfig" "${KUBECONFIGS_DIR}/admin.kubeconfig"
+cp "${WORKSHOP_ROOT}/.kcp/admin.kubeconfig" "${KUBECONFIGS_DIR}/internal-checkscript.kubeconfig"
 cp "${WORKSHOP_ROOT}/.kcp/admin.kubeconfig" "${KUBECONFIGS_DIR}/sync-agent.kubeconfig"
 cp "${WORKSHOP_ROOT}/.kcp/admin.kubeconfig" "${KUBECONFIGS_DIR}/mcp-controller.kubeconfig"
 
