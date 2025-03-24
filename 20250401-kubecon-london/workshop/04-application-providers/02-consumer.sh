@@ -14,3 +14,5 @@ export KUBECONFIG="${KUBECONFIGS_DIR}/admin.kubeconfig"
 ::kubectl::ws::use ":root:consumers:pg"
 ::kubectl::kcp::bind_with_permission_claims "root:providers:application" "apis.contrib.kcp.io" "apis.contrib.kcp.io" "secrets.core" ""
 ::kubectl::create_from_file "${EXERCISE_DIR}/apis/application.yaml"
+
+printf "\n\t🥳 The application consumer is now created! Continue with the next step: running the mcp-example-crd Application controller! 💪\n\n"

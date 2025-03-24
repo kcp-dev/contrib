@@ -13,3 +13,5 @@ export KUBECONFIG="${KUBECONFIGS_DIR}/admin.kubeconfig"
 ::kubectl::ws::use ":root:consumers"
 ::kubectl::ws::create_enter "pg" "root:universal"
 ::kubectl::kcp::bind_with_permission_claims "root:providers:database" "postgresql.cnpg.io" "postgresql.cnpg.io" "secrets.core,namespaces.core" ""
+
+printf "\n\t🥳 The pgsql consumer is now created! Continue with the next step: running the api-syncagent controller! 💪\n\n"

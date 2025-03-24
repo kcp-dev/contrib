@@ -16,4 +16,4 @@ kind_cluster_name='provider'
 ::kubectl::ws::create_enter "database" "root:universal"
 ::kubectl::create_from_file "${EXERCISE_DIR}/apis/export.yaml"
 
-printf "\n\t🥳 PostgreSQL is now running in kind cluster 'provider'! Continue with the next step: ! 💪\n\n" "${kind_cluster_name}"
+printf "\n\t🥳 The pgsql provider is now created! Continue with the next step: creating a consumer! 💪\n\n"

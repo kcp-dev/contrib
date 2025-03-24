@@ -14,5 +14,3 @@ export KUBECONFIG="${KUBECONFIGS_DIR}/${kind_cluster_name}.kubeconfig"
 
 pgrep api-syncagent &> /dev/null \
   || ::apisyncagent "postgresql.cnpg.io" "${KUBECONFIGS_DIR}/sync-agent.kubeconfig" "default"
-
-printf "\n\t🥳 PostgreSQL is now running in kind cluster 'provider'! Continue with the next step: ! 💪\n\n" "${kind_cluster_name}"

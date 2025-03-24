@@ -15,4 +15,4 @@ export KUBECONFIG="${KUBECONFIGS_DIR}/mcp-controller.kubeconfig"
 ::kubectl::create_from_file "${EXERCISE_DIR}/apis/apiresourceschema.yaml"
 ::kubectl::create_from_file "${EXERCISE_DIR}/apis/export.yaml"
 
-printf "\n\t🥳 You are good to go! \n"
+printf "\n\t🥳 The application provider is now created! Continue with the next step: creating an application consumer! 💪\n\n"
