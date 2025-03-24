@@ -39,7 +39,6 @@ This one is easy. During the workshop we will make use of these programs:
 * [kubectl](https://kubernetes.io/docs/tasks/tools/),
 * and, [kubectl-krew](https://krew.sigs.k8s.io/docs/user-guide/setup/install/).
 
-
 You may visit the links, download and extract the respective binaries to a new directory called `bin/` in the workshop's root (e.g., `$WORKSHOP/bin/kubectl`). If you already have some of these installed and available in your `$PATH`, you may skip them--just make sure they are up-to-date.
 
 Alternatively, we've prepared a script that does just that:

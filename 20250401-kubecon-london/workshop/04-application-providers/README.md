@@ -45,9 +45,9 @@ The Application brought to you by **SQL<sup>3</sup> Co.** has a CRD definition a
         ```fish
         set -gx WORKSHOP_ROOT (git rev-parse --show-toplevel)/20250401-kubecon-london/workshop
         set -gx EXERCISE_DIR $WORKSHOP_ROOT/04-application-providers
-        set -gx KUBECONFIGS_DIR "${WORKSHOP_ROOT}/kubeconfigs"
+        set -gx KUBECONFIGS_DIR $WORKSHOP_ROOT/kubeconfigs
         set -gx KREW_ROOT $WORKSHOP_ROOT/bin/.krew
-        set -gx PATH $WORKSHOP_ROOT/bin/.krew/bin $WORKSHOP_ROOT/bin $PATH"
+        set -gx PATH $WORKSHOP_ROOT/bin/.krew/bin $WORKSHOP_ROOT/bin $PATH
 
         # Stashing our admin.kubeconfig away for when we deploy the multicluster provider.
         cp $KUBECONFIGS_DIR/admin.kubeconfig $KUBECONFIGS_DIR/mcp-app.kubeconfig
@@ -94,8 +94,7 @@ mcp-example-crd --server=$(kubectl get apiexport apis.contrib.kcp.io -o jsonpath
 
 ```shell-session title="View of the service owner cluster"
 $ export KUBECONFIG=$KUBECONFIGS_DIR/provider.kubeconfig
-$ kubectl get namespaces
-# get namespace inquestion
+$ kubectl get namespaces # Get the namespace in question. Can you guess which one it is?
 $ KUBECONFIG=$KUBECONFIGS_DIR/provider.kubeconfig kubectl -n 1yaxsslokc5aoqme get all
 NAME                                   READY   STATUS    RESTARTS   AGE
 pod/application-kcp-578c5dd4df-fwlgw   1/1     Running   0          29s
@@ -135,15 +134,13 @@ $ kubectl get application application-kcp -o json
 
 Now that's some weird connection string! Similar to what we did in the previous exercise, we didn't want to have our demo setup too complex, and so for the sake of brevity, let's pretend that port forwarding is an actual Ingress, and open up the connection.
 
-
-
 ```shell
 KUBECONFIG=$KUBECONFIGS_DIR/provider.kubeconfig kubectl port-forward svc/application-kcp 8080:8080 -n 1yaxsslokc5aoqme
 ```
 
 ### Drum-roll 🥁🥁🥁
 
-The last thing for you to do is to open up your browser, and visit `localhost:8080` using web-previou tab in google shell or your machine!
+The last thing for you to do is to open up your browser, and visit `localhost:8080` using web-previou tab in google shell or your machine! << ???
 
 ## High-five! 🚀🚀🚀
 

@@ -26,11 +26,10 @@ The examples will touch on hosting and consuming SaaS-like APIs we'll create dur
 ## Before we begin
 
 Before we begin, we needed to make a few assumptions about your PC and its environment:
-* Your PC is running recent **Linux with systemd** or **MacOS**, with **amd64** or **arm64** architecture.
+* Your PC is running recent **Linux with systemd** or **MacOS**; with **amd64** or **arm64** architecture; or you are able to use [**Google Cloud Console**](https://console.cloud.google.com/).
 * We are also expecting you have installed [Docker](https://www.docker.com/) or [podman](https://podman.io/), and [git](https://git-scm.com/); if not, please do it now.
-* This lab was proven to workin Google Cloud shell too.
 
-! IMPORTANT: We recommend using google cloud shell if you have access to it! It will help us all to be on the same page.
+**For attendees at the conference:** to minimize difficulties with sorting out differences between everyone's environments (including OS / versions / conference WiFi), thank you for using [Google Cloud Console](https://console.cloud.google.com/) if possible.
 
 All the tools and services we'll present during this workshop are local, don't require super-user privileges, and won't make permament changes to your system.
 
