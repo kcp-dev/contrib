@@ -55,4 +55,13 @@ if [[ ! -f "${WORKSHOP_ROOT}/bin/.checkpoint-kubectl-krew" ]]; then
   touch "${WORKSHOP_ROOT}/bin/.checkpoint-kubectl-krew"
 fi
 
+if [[ ! -f "${WORKSHOP_ROOT}/bin/.checkpoint-jq" ]]; then
+  os="${GOOS}"
+  [[ "${os}" == "darwin" ]] && os="macos"
+  echo "🚀 Downloading jq"
+  curl -Lo "${WORKSHOP_ROOT}/bin/jq" "https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-${os}-${GOARCH}"
+  chmod +x "${WORKSHOP_ROOT}/bin/jq"
+  touch "${WORKSHOP_ROOT}/bin/.checkpoint-jq"
+fi
+
 "${EXERCISE_DIR}/99-highfive.sh"

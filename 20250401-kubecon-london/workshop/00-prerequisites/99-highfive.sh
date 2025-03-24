@@ -19,6 +19,7 @@ check_in_path "kind" "version"
 check_in_path "kubectl" "version --client"
 check_in_path "kubectl-krew" "version"
 check_in_path "mcp-example-crd" "-h" 2> /dev/null
+check_in_path "jq" "-h"
 
 touch "${WORKSHOP_ROOT}/.checkpoint-00"
 printf "\n\t🥳 High-five! Move onto the first exercise!\n\n"
