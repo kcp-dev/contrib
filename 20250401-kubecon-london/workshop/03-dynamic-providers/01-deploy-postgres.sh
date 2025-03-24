@@ -17,4 +17,4 @@ kind_cluster_name='provider'
 ::kubectl::apply_from_file "${EXERCISE_DIR}/apis/resources-cluster.yaml"
 ::kubectl::apply_from_file "${EXERCISE_DIR}/apis/resources-database.yaml"
 
-printf "\n\t🥳 PostgreSQL is now running in kind cluster 'provider'! Continue with the next step: ! 💪\n\n" "${kind_cluster_name}"
+printf "\n\t🥳 PostgreSQL is now running in kind cluster '%s'! Continue with the next step: creating database provider in kcp! 💪\n\n" "${kind_cluster_name}"

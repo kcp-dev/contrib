@@ -16,4 +16,4 @@ kind_kubeconfig="${KUBECONFIGS_DIR}/${kind_cluster_name}.kubeconfig"
 
 KUBECONFIG="${kind_kubeconfig}" kubectl version > /dev/null
 
-printf "\n\t🥳 kind cluster '%s' is running! Continue with the next step: ! 💪\n\n" "${kind_cluster_name}"
+printf "\n\t🥳 kind cluster '%s' is running! Continue with the next step: deploying PostgresSQL! 💪\n\n" "${kind_cluster_name}"

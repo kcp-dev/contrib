@@ -4,27 +4,43 @@ set -o nounset
 set -o pipefail
 
 source "$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop/lib/env.sh" "$(cd "$(dirname "$0")" && pwd)"
+source "${WORKSHOP_ROOT}/lib/ensure.sh"
 source "${WORKSHOP_ROOT}/lib/kubectl.sh"
+
+[[ -f "${WORKSHOP_ROOT}/.checkpoint-01" ]] || { printf "\n\t📜 You need to complete the previous exercise!\n\n" ; exit 1 ; }
+
+ensure::internal_checkscript_kubeconfig
 export KUBECONFIG="${KUBECONFIGS_DIR}/internal-checkscript.kubeconfig"
 
-kubectl ws use ":" > /dev/null
-kubectl get ws consumers > /dev/null
-kubectl get ws providers > /dev/null
+# Verify that the krew plugins are in place.
 
-kubectl ws use ":root:providers" > /dev/null
-kubectl get ws cowboys > /dev/null
+function check_krew_plugin {
+  krew_plugin="${1}"
+  ensure::eval_with_msg "kubectl ${krew_plugin} --help" \
+    "Krew plugin '${krew_plugin}' looks good!" \
+    "Krew plugin '${krew_plugin}' is missing :(\n\tTIP: Check that it's installed and in your \$PATH!"
+}
 
-kubectl ws use ":root:consumers" > /dev/null
-kubectl get ws wild-north > /dev/null
-kubectl get ws wild-west > /dev/null
+check_krew_plugin "kcp"
+check_krew_plugin "ws"
+check_krew_plugin "create-workspace"
+check_krew_plugin "create workspace"
 
-kubectl ws use ":root:consumers:wild-north" > /dev/null
-kubectl get apibinding cowboys-consumer > /dev/null
+# Verify the cowboys provider.
 
-kubectl ws use ":root:consumers:wild-west" > /dev/null
-kubectl get apibinding cowboys-consumer > /dev/null
+ensure::ws_use ":root:providers"
+ensure::ws_use ":root:providers:cowboys"
+ensure::apiexport_exists "cowboys"
 
-printf "\n\t ✅ Cowboy APIBindings between consumer and provider workspaces exist!\n"
+# Verify the consumers.
+
+ensure::ws_use ":root:consumers"
+
+ensure::ws_use ":root:consumers:wild-west"
+ensure::apibinding_exists "cowboys-consumer"
+
+ensure::ws_use ":root:consumers:wild-north"
+ensure::apibinding_exists "cowboys-consumer"
+
 touch "${WORKSHOP_ROOT}/.checkpoint-02"
-
-printf "\n\t🥳 High-five! Move onto the second exercise!\n\n"
+printf "\n\t🥳 High-five! Move onto the third exercise!\n\n"

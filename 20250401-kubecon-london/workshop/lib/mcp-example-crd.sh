@@ -9,6 +9,6 @@ function ::mcpexamplecrd {
   provider="${2}"
   printf "\n✨Running mcp-example-crd, reconciling Application resource\n"
   printf "  from '${server}' in provider '${provider}'\n"
-  printf "\$ mcp-example-crd --server "${apiexport_name}" --provider-kubeconfig "${provider}"\n"
-  mcp-example-crd --server "${apiexport_name}" --provider-kubeconfig "${provider}"
+  printf "\$ mcp-example-crd --server "${server}" --provider-kubeconfig "${provider}"\n"
+  mcp-example-crd --server "${server}" --provider-kubeconfig "${provider}"
 }
