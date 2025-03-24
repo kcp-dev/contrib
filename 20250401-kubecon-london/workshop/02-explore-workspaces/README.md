@@ -27,8 +27,8 @@ Workspaces, or kcp for that matter, is not something that vanilla kubectl knows 
         ```fish
         set -gx WORKSHOP_ROOT (git rev-parse --show-toplevel)/20250401-kubecon-london/workshop
         set -gx KREW_ROOT $WORKSHOP_ROOT/bin/.krew
-        set -gx PATH $WORKSHOP_ROOT/bin/.krew/bin $WORKSHOP_ROOT/bin $PATH"
-        set KUBECONFIG $WORKSHOP_ROOT/kubeconfigs/admin.kubeconfig"
+        set -gx PATH $WORKSHOP_ROOT/bin/.krew/bin $WORKSHOP_ROOT/bin $PATH
+        set -gx KUBECONFIG $WORKSHOP_ROOT/kubeconfigs/admin.kubeconfig
         ```
 
 ```shell
@@ -112,7 +112,7 @@ kubectl ws tree
 
 You should get output similar to this:
 
-```shell
+```shell-session
 .
 └── root
     ├── one
@@ -139,7 +139,7 @@ kubectl create workspace providers --enter
 kubectl create create cowboys --enter
 ```
 
-```shell
+```shell-session
 $ kubectl ws use :
 Current workspace is 'root'.
 $ kubectl ws tree
@@ -207,7 +207,7 @@ kubectl create -f $WORKSHOP_ROOT/02-explore-workspaces/apis/consumer-wild-west.y
 
 Let's check the Cowboy we have created:
 
-```shell
+```shell-session
 $ kubectl get cowboy buckaroo-bill -o json
 {
     "apiVersion": "wildwest.dev/v1alpha1",
@@ -238,7 +238,7 @@ kubectl kcp bind apiexport root:providers:cowboys:cowboys --name cowboys-consume
 kubectl create -f $WORKSHOP_ROOT/02-explore-workspaces/apis/consumer-wild-north.yaml
 ```
 
-```shell
+```shell-session
 $ kubectl get cowboy hold-the-wall -o json
 {
     "apiVersion": "wildwest.dev/v1alpha1",
@@ -262,7 +262,7 @@ $ kubectl get cowboy hold-the-wall -o json
 
 Great! We have created two instances of a common API, and were able to create a couple of dummy objects with it.
 
-```shell
+```shell-session
 $ kubectl ws use :
 Current workspace is 'root'.
 $ kubectl ws tree

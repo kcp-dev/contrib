@@ -30,7 +30,7 @@ Excited? Let's get down to it!
         ```fish
         set -gx WORKSHOP_ROOT (git rev-parse --show-toplevel)/20250401-kubecon-london/workshop
         set -gx EXERCISE_DIR $WORKSHOP_ROOT/03-dynamic-providers
-        set -gx KUBECONFIGS_DIR "${WORKSHOP_ROOT}/kubeconfigs"
+        set -gx KUBECONFIGS_DIR $WORKSHOP_ROOT/kubeconfigs
         set -gx KREW_ROOT $WORKSHOP_ROOT/bin/.krew
         set -gx PATH $WORKSHOP_ROOT/bin/.krew/bin $WORKSHOP_ROOT/bin $PATH"
         ```
@@ -143,7 +143,7 @@ With all that done, we're ready to _connect the dots:_ the external cluster runn
 
 In the last exercise we discussed how there is nothing to reconcile Cowboys between workspaces, and that we'd need a controller that is able to observe state globally, react on Spec changes and update Status of the watched objects. Moreover, we need not only synchronizing APIs and objects across workspaces, but also across an external Kubernetes cluster that we've created above.
 
-To do all of that, kcp offers one implementation of such a controller, the [api-syncagent](https://github.com/kcp-dev/api-syncagent). The api-syncagent generally runs in the cluster owning the service, i.e. our kind cluster. Then, the service owner would publish the API groups that are to be exposed to kcp--this is done by defining a PublishedResource object which we'll see in a bit. The published resources are then picked up by the api-syncagent, creating APIResourceSchemas for them automatically, and shoving them into the prepared APIExport on the kcp side, making them ready for consumption. There is a lot more going on, and you can consult the project's documentation available in the repository linked above. But for now, this brief introduction shall suffice and we can move onto incorporating the controller into our seedling infrastructure.
+To do all of that, kcp offers one implementation of such a controller, the [api-syncagent](https://github.com/kcp-dev/api-syncagent). The api-syncagent generally runs in the cluster owning the service, i.e. our kind cluster. Then, the service owner would publish the API groups that are to be exposed to kcp--this is done by defining a PublishedResource object which we'll see in a bit. The published resources are then picked up by the api-syncagent, creating APIResourceSchemas for them automatically, and shoving them into the prepared APIExport on the kcp side, making them ready for consumption. There is a lot more going on, and you can consult the [project's documentation](https://github.com/kcp-dev/api-syncagent/tree/main/docs). But for now, this brief introduction shall suffice and we can move onto incorporating the controller into our seedling infrastructure.
 
 !!! Important
 
@@ -186,7 +186,7 @@ And that's it! The only thing left for us to do is to run the controller itself.
 api-syncagent --namespace default --apiexport-ref postgresql.cnpg.io --kcp-kubeconfig=$KUBECONFIGS_DIR/sync-agent.kubeconfig
 ```
 
-At this point we have 2 shells running long running operations. Lets open 3rd one.
+At this point we have 2 shells running long running operations. Let's open 3rd one.
 
 !!! Important
 
@@ -206,10 +206,10 @@ At this point we have 2 shells running long running operations. Lets open 3rd on
         ```fish
         set -gx WORKSHOP_ROOT (git rev-parse --show-toplevel)/20250401-kubecon-london/workshop
         set -gx EXERCISE_DIR $WORKSHOP_ROOT/03-dynamic-providers
-        set -gx KUBECONFIGS_DIR "${WORKSHOP_ROOT}/kubeconfigs"
+        set -gx KUBECONFIGS_DIR $WORKSHOP_ROOT/kubeconfigs
         set -gx KREW_ROOT $WORKSHOP_ROOT/bin/.krew
-        set -gx PATH $WORKSHOP_ROOT/bin/.krew/bin $WORKSHOP_ROOT/bin $PATH"
-        set -gx KUBECONFIG ${KUBECONFIGS_DIR}/admin.kubeconfig
+        set -gx PATH $WORKSHOP_ROOT/bin/.krew/bin $WORKSHOP_ROOT/bin $PATH
+        set -gx KUBECONFIG $KUBECONFIGS_DIR/admin.kubeconfig
         ```
 
 At the very beginning of this exercise we've made a copy of `admin.kubeconfig` into `sync-agent.kubeconfig` and using that we've created the `:root:providers:database` workspace. If you are wondering how does api-syncagent know where it can find the prepared APIExport, this is how. The kubeconfig has its context set to that workspace's endpoint. Now, leave the controller running and let's go create some databases finally!
@@ -240,26 +240,26 @@ Bam! You've just been promoted to a consumer! You don't have an application to r
 
 ```shell
 kubectl apply -f $EXERCISE_DIR/apis/consumer-1-cluster.yaml
-# get cluster to wait for status:
-kubectl get cluster
-NAME   AGE   INSTANCES   READY   STATUS               PRIMARY
-kcp    27s   1                   Setting up primary   
-
-# IMPORTANT: WAIT UNTIL IT SHOWS: Cluster in healthy state
-kubectl get cluster
-NAME   AGE   INSTANCES   READY   STATUS                     PRIMARY
-kcp    50s   1           1       Cluster in healthy state   kcp-1
-
 kubectl apply -f $EXERCISE_DIR/apis/consumer-1-database.yaml
 ```
 
-on kcp side we see check and we are just one consumer `pg` and have database instance in our workspace
-`root:consumers:pg`. Nothing stops us to creating more. But we gonna limit ourselfs to 1 consumer in this workshop.
+It's important we wait for the resources to be ready before we continue:
 
-Feel free to explore and create more consumers after the workshop!
+```shell-session
+# Notice that the pgsql cluster is still booting up:
+$ kubectl get cluster
+NAME   AGE   INSTANCES   READY   STATUS               PRIMARY
+kcp    27s   1                   Setting up primary
 
+... 1 to 5 minutes later ...
 
-And just like that, we have a PostgreSQL server with a database, that somebody else is running
+# This is what a healthy cluster status looks like:
+$ kubectl get cluster
+NAME   AGE   INSTANCES   READY   STATUS                     PRIMARY
+kcp    50s   1           1       Cluster in healthy state   kcp-1
+```
+
+And just like that, we have a PostgreSQL server with a database, that somebody else is running. Try to follow the example below!
 
 <div class="grid" markdown>
 
@@ -303,14 +303,16 @@ kcp-superuser   kubernetes.io/basic-auth   2      9m3s
 
 </div>
 
-What can we do with it? You may recall that there were Secrets involved in the permission claims when we bound the APIExport. As it turns out, we have a Secret with admin access to the PostgreSQL sever (as we should, we own it!), and can use it to authenticate with admin access to the PostgreSQL sever (as we should, we own it!), and can use it to authenticate.
+Indeed, if you check the kcp side, you'll see that we have only one consumer `pg` with a single database instance in our workspace `root:consumers:pg`. Nothing stops us from creating more however. We are however going to limit ourselves to only one consumer during the workshop. Feel free to explore and create more consumers later yourself!
+
+Now, what can we do with it? You may recall that there were Secrets involved in the permission claims when we bound the APIExport. As it turns out, we have a Secret with admin access to the PostgreSQL sever (as we should, we own it!), and can use it to authenticate.
 
 > A side note: we are going to cheat a bit now. We are running all the clusters on the same machine, and we know what IPs and ports to use. Having the username and the password to the DB is one thing, knowing where to connect is another. In the real world, **SQL<sup>3</sup> Co.** would have created a proper Ingress with a Service for us, and generated a connection string inside a Secret, and this would all work as it stands. Not having done that though, let's agree on a simplification: in place of ingress we will use port-forwarding, and the connection string we will create ourselves.
 
 <div class="grid" markdown>
 
 ```shell-session title="port forward"
-export KUBECONFIG=$KUBECONFIGS_DIR/provider.kubeconfig
+$ export KUBECONFIG=$KUBECONFIGS_DIR/provider.kubeconfig
 $ # Pretending to have an Ingress by port-forwarding in a separate terminal.
 $ # Note that the "kcp-rw" service is created by the cnpg operator, and that the "kcp" in the name comes from the PostgreSQL cluster name.
 $ kubectl -n 1yaxsslokc5aoqme port-forward svc/kcp-rw 5432:5432
