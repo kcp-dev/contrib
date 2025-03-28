@@ -134,7 +134,7 @@ Create `providers` and `providers:cowboys` workspaces:
 ```shell
 kubectl ws use :
 kubectl create workspace providers --enter
-kubectl create create cowboys --enter
+kubectl create workspace cowboys --enter
 ```
 
 ```shell-session
