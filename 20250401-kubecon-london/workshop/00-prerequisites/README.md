@@ -37,7 +37,7 @@ Ready for a warm-up? In this quick exercise we are going to install programs we'
 
 * [kcp](https://github.com/kcp-dev/kcp/releases/latest),
 * kcp's [api-syncagent](https://github.com/kcp-dev/api-syncagent/releases/latest),
-* kcp's [multicluster-controller runtime example binary](kcp-multicluster-provider-example),
+* kcp's [multicluster-controller runtime example binary](https://github.com/mjudeikis/kcp-multicluster-provider-example/releases/download),
 * [kind](https://github.com/kubernetes-sigs/kind/releases/latest),
 * [kubectl](https://kubernetes.io/docs/tasks/tools/),
 * and, [kubectl-krew](https://krew.sigs.k8s.io/docs/user-guide/setup/install/).
