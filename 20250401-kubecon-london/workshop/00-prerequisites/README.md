@@ -12,7 +12,7 @@ Start by cloning the git repository we'll refer to throughout the workshop, and 
 Important: We will need 4 terminal windows for long running programs & interactions to the same underlaying machine during this workshop.
 
 ```shell
-git clone -b mjudeikis/kubecon.eu.workshop https://github.com/mjudeikis/kcp-contrib.git
+git clone https://github.com/kcp-dev/contrib.git
 cd 20250401-kubecon-london/workshop/
 ```
 
