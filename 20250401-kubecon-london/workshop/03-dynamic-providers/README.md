@@ -5,9 +5,10 @@ title: "03: Dynamic providers"
 # Dynamic providers
 
 In this exercise we'll explore an actual SaaS scenario: self-provisioning PostgreSQL databases, where:
+
 * one (external) cluster will be in the role of a service owner, running the database servers,
 * one workspace will be in the role of a service provider, where consumers can self-service their databases,
-* one or more workspacess will be consuming the database(s).
+* one or more workspaces will be consuming the database(s).
 
 Excited? Let's get down to it!
 
@@ -82,7 +83,7 @@ While its Pods are starting up, let's move onto the next step.
 
 ## Give and take
 
-Whew, we're back in kcp land! Equipped with the knowledge from our last exercise, we already know that we can model producer-consumer relationship as workspaces, where one provides an APIExport (that exposes some API described by an APIResourceSchema or a CRD for example), and the other "imports" it by binding to it, with an APIBinding.
+Whew, we're back in kcp land! Equipped with the knowledge from our last exercise, we already know that we can model producer-consumer relationship as workspaces, where one provides an APIExport (that exposes APIs described by APIResourceSchemas), and the other(s) "imports" it by binding to it, with an APIBinding.
 
 !!! Important
 
@@ -100,7 +101,7 @@ Whew, we're back in kcp land! Equipped with the knowledge from our last exercise
         set -gx KUBECONFIG $KUBECONFIGS_DIR/sync-agent.kubeconfig
         ```
 
-What a strange thing we just did with that kubeconfig, don't you think? While important, we will come back to it later, in the next section. For now, let's focus on creating the provider's workspace, and an APIExport in it. We already have `:root:providers` workspace created, from where we provisioned Cowboys. While not very useful, we now know the commands to move around in the hierarchy of workspaces, and can create them too! Let's do that, this time for databases:
+Notice that `cp` call just above, and how we set up the `KUBECONFIG` variable? While important, we will come back to why we did that later, in the next section. For now, let's focus on creating the provider's workspace, and an APIExport in it. We already have `:root:providers` workspace created, from where we provisioned Cowboys. While not very useful, we now know the commands to move around in the hierarchy of workspaces, and can create them too! Let's do that, this time for databases:
 
 ```shell
 kubectl ws use :root:providers
@@ -143,7 +144,7 @@ With all that done, we're ready to _connect the dots:_ the external cluster runn
 
 In the last exercise we discussed how there is nothing to reconcile Cowboys between workspaces, and that we'd need a controller that is able to observe state globally, react on Spec changes and update Status of the watched objects. Moreover, we need not only synchronizing APIs and objects across workspaces, but also across an external Kubernetes cluster that we've created above.
 
-To do all of that, kcp offers one implementation of such a controller, the [api-syncagent](https://github.com/kcp-dev/api-syncagent). The api-syncagent generally runs in the cluster owning the service, i.e. our kind cluster. Then, the service owner would publish the API groups that are to be exposed to kcp--this is done by defining a PublishedResource object which we'll see in a bit. The published resources are then picked up by the api-syncagent, creating APIResourceSchemas for them automatically, and shoving them into the prepared APIExport on the kcp side, making them ready for consumption. There is a lot more going on, and you can consult the [project's documentation](https://github.com/kcp-dev/api-syncagent/tree/main/docs). But for now, this brief introduction shall suffice and we can move onto incorporating the controller into our seedling infrastructure.
+To do all of that, kcp offers one implementation of such a controller, the [api-syncagent](https://github.com/kcp-dev/api-syncagent). The api-syncagent generally runs in the cluster owning the service, i.e. our kind cluster. Then, the service owner would publish the API groups that are to be exposed to kcp--this is done by defining a **PublishedResource** object which we'll see in a bit. **The published resources are then picked up by the api-syncagent, creating APIResourceSchemas for them automatically, and shoving them into the prepared APIExport on the kcp side, making them ready for consumption.** There is a lot more going on, and you can consult the [project's documentation](https://github.com/kcp-dev/api-syncagent/tree/main/docs). But for now, this brief introduction shall suffice and we can move onto incorporating the controller into our seedling infrastructure.
 
 !!! Important
 
@@ -165,7 +166,7 @@ kubectl apply -f $EXERCISE_DIR/apis/resources-cluster.yaml
 kubectl apply -f $EXERCISE_DIR/apis/resources-database.yaml
 ```
 
-We've created PublishedResource objects for `clusters` and `databases` resources of the `postgresql.cnpg.io` API group. Give yourself a second and check the definitions we've just applyied. Take a look at the `publish-cnpg-cluster` PublishedResource, and you'll notice that it's not publishing just the pgsql Cluster, but also a Secret:
+We've created PublishedResource objects for `clusters` and `databases` resources of the `postgresql.cnpg.io` API group. Give yourself a second and check the definitions we've just applied. Take a look at the `publish-cnpg-cluster` PublishedResource, and you'll notice that it's not publishing just the pgsql Cluster, but also a Secret:
 
 ```yaml
   # ... snip ...
@@ -180,15 +181,23 @@ We've created PublishedResource objects for `clusters` and `databases` resources
 
 Currently in the role of a service owner, we know that pgsql (and specifically cnpg) stores credentials to the database server in a Secret, and that the secret is referenced by the `cluster` resource in its `spec.superuserSecret.name` field. The api-syncagent will extract that object using the path we supplied, and share it along with the `cluster` resource in the APIExport.
 
-And that's it! The only thing left for us to do is to run the controller itself. api-syncagent can be deployed inside the cluster, or run externally as a standalone process. To make things simpler, we are going with the latter option:
+And that's it! The only thing left for us to do is to run the controller itself. api-syncagent can be deployed inside the cluster, or run externally as a standalone process. To make things simpler, we are going with the latter option. Keep the process running:
 
 ```shell
 api-syncagent --namespace default --apiexport-ref postgresql.cnpg.io --kcp-kubeconfig=$KUBECONFIGS_DIR/sync-agent.kubeconfig
 ```
 
-At this point we have 2 shells running long running operations. Let's open 3rd one.
+At the very beginning of this exercise we've made a copy of `admin.kubeconfig` into `sync-agent.kubeconfig` and using that we've created the `:root:providers:database` workspace. If you are wondering how does api-syncagent know where it can find the prepared APIExport, this is how. The kubeconfig has its context set to that workspace's endpoint. Now, leave the controller running and let's go create some databases finally!
+
+!!! tip "Bonus step"
+
+    If you are curious what happened to our mostly empty APIExport and APIBinding objects from before, now would be the time to `KUBECONFIG=$KUBECONFIGS_DIR/admin.config kubectl get -o json` them in another terminal. Can you spot what's different?
+
+## May I have some?
 
 !!! Important
+
+    At this point we have two shells running two processes. Let's open a **third shell** so we can continue.
 
     === "Bash/ZSH"
 
@@ -212,26 +221,6 @@ At this point we have 2 shells running long running operations. Let's open 3rd o
         set -gx KUBECONFIG $KUBECONFIGS_DIR/admin.kubeconfig
         ```
 
-At the very beginning of this exercise we've made a copy of `admin.kubeconfig` into `sync-agent.kubeconfig` and using that we've created the `:root:providers:database` workspace. If you are wondering how does api-syncagent know where it can find the prepared APIExport, this is how. The kubeconfig has its context set to that workspace's endpoint. Now, leave the controller running and let's go create some databases finally!
-
-!!! tip "Bonus step"
-
-    If you are curious what happened to our mostly empty APIExport and APIBinding objects from before, now would be the time to `KUBECONFIG=$KUBECONFIGS_DIR/admin.config kubectl get -o json` them in another terminal. Can you spot what's different?
-
-## May I have some?
-
-    === "Bash/ZSH"
-
-        ```shell
-        export KUBECONFIG="${KUBECONFIGS_DIR}/admin.kubeconfig"
-        ```
-
-    === "Fish"
-
-        ```fish
-        set -gx KUBECONFIG $KUBECONFIGS_DIR/admin.kubeconfig
-        ```
-
 ```shell
 kubectl ws use :root:consumers:pg
 ```
@@ -247,13 +236,15 @@ It's important we wait for the resources to be ready before we continue:
 
 ```shell-session
 # Notice that the pgsql cluster is still booting up:
+
 $ kubectl get cluster
 NAME   AGE   INSTANCES   READY   STATUS               PRIMARY
 kcp    27s   1                   Setting up primary
 
-... 1 to 5 minutes later ...
+# ... 1 to 5 minutes later ...
 
 # This is what a healthy cluster status looks like:
+
 $ kubectl get cluster
 NAME   AGE   INSTANCES   READY   STATUS                     PRIMARY
 kcp    50s   1           1       Cluster in healthy state   kcp-1
@@ -305,7 +296,7 @@ kcp-superuser   kubernetes.io/basic-auth   2      9m3s
 
 Indeed, if you check the kcp side, you'll see that we have only one consumer `pg` with a single database instance in our workspace `root:consumers:pg`. Nothing stops us from creating more however. We are however going to limit ourselves to only one consumer during the workshop. Feel free to explore and create more consumers later yourself!
 
-Now, what can we do with it? You may recall that there were Secrets involved in the permission claims when we bound the APIExport. As it turns out, we have a Secret with admin access to the PostgreSQL sever (as we should, we own it!), and can use it to authenticate.
+Now, what can we do with it? You may recall that there were Secrets involved in the permission claims when we bound the APIExport. As it turns out, we have a Secret with admin access to the PostgreSQL server (as we should, we own it!), and can use it to authenticate.
 
 > A side note: we are going to cheat a bit now. We are running all the clusters on the same machine, and we know what IPs and ports to use. Having the username and the password to the DB is one thing, knowing where to connect is another. In the real world, **SQL<sup>3</sup> Co.** would have created a proper Ingress with a Service for us, and generated a connection string inside a Secret, and this would all work as it stands. Not having done that though, let's agree on a simplification: in place of ingress we will use port-forwarding, and the connection string we will create ourselves.
 
@@ -350,7 +341,7 @@ one=# SELECT * FROM pg_catalog.pg_tables WHERE schemaname = 'pg_catalog';
 
 How cool is that!
 
-In this exercise we've seen multiple personas interacting with each other, and each having different responsibilities. This is what Software-as-a-Service style of workflow can look like. Want more? In the next, and final exercise of this workshop, we'll explore what it's like to develop and deploy mutli-cluster applications against kcp.
+In this exercise we've seen multiple personas interacting with each other, and each having different responsibilities. This is what the Software-as-a-Service style of workflow can look like. Want more? In the next, and final exercise of this workshop, we'll explore what it's like to develop and deploy mutli-cluster applications against kcp.
 
 ---
 
@@ -367,6 +358,7 @@ If there were no errors, you may continue with the next exercise.
 ### Cheat-sheet
 
 You may fast-forward through this exercise by running:
+
 * `03-dynamic-providers/00-run-provider-cluster.sh`
 * `03-dynamic-providers/01-deploy-postgres.sh`
 * `03-dynamic-providers/02-create-provider.sh`

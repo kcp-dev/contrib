@@ -82,9 +82,7 @@ kubectl ws use :
 kubectl get ws
 ```
 
-These are the workspaces we created, and they represent logical separation of resources in the cluster.
-
-We haven't seen `ws use` yet. Using this command, you move into a different workspace in the tree of workspaces, much like `cd` moves you into a different directory described by a path. In case of workspaces, a path too may be relative or absolute, where `:` is the path separator, and `:` alone denotes the root of the tree.
+We haven't seen `ws use` yet. Using this command you move into a different workspace in the tree of workspaces, much like `cd` moves you into a different directory described by a path. In the case of workspaces, a path too may be relative or absolute, where `:` is the path separator, and `:` alone denotes the root of the tree.
 
 ```shell
 kubectl ws use :
@@ -101,7 +99,7 @@ kubectl create configmap test --from-literal=test=two
 kubectl get configmap test -o json
 ```
 
-Notice how even though these two ConfigMaps have the same name `test`, and are in the same namespace `default`, they are actually two distinct objects. They live in two different workspaces, and are completely separate.
+Notice how even though these two ConfigMaps have the same name `test`, and are in the same namespace `default`, they are actually two distinct objects. They live in two different workspaces, and are completely separate. **Workspaces represent logical separation of resources in the cluster.**
 
 We've created a few workspaces now, and already it's easy to lose sight of what is where. Say hello to `ws tree`:
 
@@ -169,16 +167,18 @@ Starting with the first one, `APIResourceSchema`:
 kubectl get apiresourceschema -o json
 ```
 
-Try to skim through the YAML output and you'll notice that it is almost identical to a definition of a CRD. Unlinke a CRD however, `APIResourceSchema` instance does not have a backing API server, and instead it simply describes an API that we can pass around and refer to. By decoupling the schema definition from serving, API owners can be more explicit about API evolution.
+Try to skim through the YAML output and you'll notice that it is almost identical to a definition of a CRD. Unlike a CRD however, `APIResourceSchema` instance does not have a backing API server, and instead it simply describes an API that we can pass around and refer to. By decoupling the schema definition from serving, API owners can be more explicit about API evolution.
 
 ```shell
 kubectl get apiexport cowboys -o yaml
 ```
 
 Take a note of the following properties in the output:
-* `.spec.latestResourceSchemas`: refers to specific versions of `APIResourceSchema` objects,
+
+* `.spec.latestResourceSchemas`: lists which APIResourceSchemas we are exporting,
 * `.spec.permissionClaims`: describes resource permissions that our API depends on. These are the permissions that we, the service provider, want the consumer to grant us,
-* `.status.virtualWorkspaces[].url`: the URL where the provider can access the granted resources.
+* `.status.virtualWorkspaces[].url`: a Kubernetes endpoint to access all resources that belong to this export, across all consumers.
+
 ```yaml
 # Stripped down example output of `kubectl get apiexport` command above.
 spec:
@@ -195,7 +195,7 @@ status:
 
 ### Service consumer
 
-With the provider in place, let's create two consumers in their own workspaces, starting with "wild-west":
+With the provider in place, let's shift into the role of a consumer. Actually, two consumers, in their own workspaces! Let's start with the first one, named "wild-west":
 
 ```shell
 kubectl ws use :
@@ -288,7 +288,7 @@ kubectl ws :root:providers:cowboys
 kubectl get apiexport cowboys -o json | jq '.status.virtualWorkspaces[].url'
 ```
 
-Using that URL, we can confirm that only the resources we have agreed on are available to the workspaces.
+Using that URL, we can confirm that we have access to the resources the consumers have agreed to:
 
 ```shell-session
 $ kubectl -s 'https://192.168.32.7:6443/services/apiexport/1ctnpog1ny8bnud6/cowboys/clusters/*' api-resources
@@ -318,7 +318,7 @@ From that, you can already start imagining what a workspace-aware controller ope
 Finished? High-five! Check-in your completion with:
 
 ```shell
-../02-explore-workspaces/99-highfive.sh
+02-explore-workspaces/99-highfive.sh
 ```
 
 If there were no errors, you may continue with the next exercise.
