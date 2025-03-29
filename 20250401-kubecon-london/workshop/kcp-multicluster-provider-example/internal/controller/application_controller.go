@@ -25,12 +25,15 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/utils/ptr"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
+
+	cnpgapiv1 "github.com/cloudnative-pg/cloudnative-pg/api/v1"
 
 	apisv1alpha1 "github.com/kcp-dev/multicluster-provider/examples/crd/api/v1alpha1"
 )
@@ -64,15 +67,15 @@ type ApplicationReconciler struct {
 func (r *ApplicationReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 
-	obj := &apisv1alpha1.Application{}
-	if err := r.Client.Get(ctx, req.NamespacedName, obj); err != nil {
+	app := &apisv1alpha1.Application{}
+	if err := r.Client.Get(ctx, req.NamespacedName, app); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
 	var secret corev1.Secret
 	err := r.Client.Get(ctx, client.ObjectKey{
 		Namespace: req.Namespace,
-		Name:      obj.Spec.DatabaseSecretRef.Name,
+		Name:      app.Spec.DatabaseSecretRef.Name,
 	}, &secret)
 	if err != nil {
 		return ctrl.Result{
@@ -80,12 +83,23 @@ func (r *ApplicationReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 		}, err
 	}
 
-	namespace, ok := obj.Annotations["kcp.io/cluster"]
+	namespace, ok := app.Annotations["kcp.io/cluster"]
 	if !ok {
 		return ctrl.Result{}, fmt.Errorf("cluster label not found")
 	}
 
-	deployment, err := getApplicationDeployment(obj, namespace)
+	var db cnpgapiv1.Database
+	err = r.ProviderClient.Get(ctx, types.NamespacedName{
+		Namespace: namespace,
+		Name:      app.Spec.DatabaseRef,
+	}, &db)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+
+	pgpass := newPgpassData(&db, secret, namespace)
+
+	deployment, err := getApplicationDeployment(pgpass, app, namespace)
 	if err != nil {
 		return ctrl.Result{}, err
 	}
@@ -97,7 +111,7 @@ func (r *ApplicationReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 		return ctrl.Result{}, err
 	}
 
-	svc, err := getApplicationService(obj, namespace)
+	svc, err := getApplicationService(app, namespace)
 	if err != nil {
 		return ctrl.Result{}, err
 	}
@@ -109,25 +123,25 @@ func (r *ApplicationReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 		return ctrl.Result{}, err
 	}
 
-	serverJson, err := getServerJson(obj, secret)
+	serverJson, err := pgpass.toServersJson()
 	if err != nil {
 		return ctrl.Result{}, err
 	}
 
-	serverSecret := &corev1.Secret{
+	serverConfig := &corev1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      obj.Name + "-server",
+			Name:      serverJsonConfigMapName(app),
 			Namespace: namespace,
 			Finalizers: []string{
 				FinalizerName,
 			},
 		},
-		Data: map[string][]byte{
-			"servers.json": serverJson,
+		Data: map[string]string{
+			"servers.json": string(serverJson),
 		},
 	}
 
-	_, err = controllerutil.CreateOrUpdate(ctx, r.ProviderClient, serverSecret, func() error {
+	_, err = controllerutil.CreateOrUpdate(ctx, r.ProviderClient, serverConfig, func() error {
 		return nil
 	})
 	if err != nil {
@@ -135,10 +149,10 @@ func (r *ApplicationReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 	}
 
 	// Update the status
-	obj.Status.Status = "Ready"
-	obj.Status.ConnectionString = "kubectl port-forward svc/" + obj.Name + " 8080:8080 -n " + namespace
+	app.Status.Status = "Ready"
+	app.Status.ConnectionString = "kubectl port-forward svc/" + app.Name + " 8080:8080 -n " + namespace
 
-	if err := r.Client.Status().Update(ctx, obj); err != nil {
+	if err := r.Client.Status().Update(ctx, app); err != nil {
 		return ctrl.Result{}, err
 	}
 
@@ -153,18 +167,59 @@ func (r *ApplicationReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Complete(r)
 }
 
-func getServerJson(app *apisv1alpha1.Application, secret corev1.Secret) ([]byte, error) {
-	d := map[string]interface{}{
-		"Servers": map[string]interface{}{
-			"1": map[string]string{
-				"Name":  app.Name,
-				"Group": "Servers",
-				"Host":  "localhost",
+func serverJsonConfigMapName(app *apisv1alpha1.Application) string {
+	return fmt.Sprintf("%s-servers", app.Name)
+}
+
+func pgsqlServerHost(db *cnpgapiv1.Database) string {
+	return fmt.Sprintf("%s-rw.%s.svc.cluster.local", db.GetClusterRef().Name, db.Namespace)
+}
+
+type pgpassData struct {
+	Name          string
+	Group         string
+	Host          string
+	Port          int
+	Username      string
+	PassFile      string
+	SSLMode       string
+	MaintenanceDB string
+	secret        string
+}
+
+func newPgpassData(
+	db *cnpgapiv1.Database,
+	secret corev1.Secret,
+	namespace string,
+) *pgpassData {
+	return &pgpassData{
+		Name:          db.Name,
+		Group:         "Servers",
+		Host:          pgsqlServerHost(db),
+		Port:          5432,
+		Username:      string(secret.Data["username"]),
+		PassFile:      "/tmp/pgpassfile", // We don't have perms to write to /pgadmin4 where this normally would be.
+		SSLMode:       "prefer",
+		MaintenanceDB: "postgres",
+		secret:        string(secret.Data["password"]),
+	}
+}
+
+func (data *pgpassData) toServersJson() ([]byte, error) {
+	// See https://www.pgadmin.org/docs/pgadmin4/latest/import_export_servers.html#json-format.
+	return json.Marshal(
+		map[string]interface{}{
+			"Servers": map[string]interface{}{
+				"1": data,
 			},
 		},
-	}
+	)
+}
 
-	return json.Marshal(d)
+func (data *pgpassData) toPassfileContent() string {
+	// See https://www.postgresql.org/docs/current/libpq-pgpass.html.
+	return fmt.Sprintf("%s:%d:%s:%s:%s",
+		data.Host, data.Port, data.MaintenanceDB, data.Username, data.secret)
 }
 
 func getApplicationService(app *apisv1alpha1.Application, namespace string) (*corev1.Service, error) {
@@ -190,7 +245,16 @@ func getApplicationService(app *apisv1alpha1.Application, namespace string) (*co
 	}, nil
 }
 
-func getApplicationDeployment(app *apisv1alpha1.Application, namespace string) (*appsv1.Deployment, error) {
+func getApplicationDeployment(
+	pgpass *pgpassData,
+	app *apisv1alpha1.Application,
+	namespace string,
+) (*appsv1.Deployment, error) {
+	const serverConfigVolume = "server-config"
+	const serverSecretVolume = "server-secret"
+	const passFileVolume = "passfile-dir"
+	const serverPort = 5432
+
 	return &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      app.Name,
@@ -213,6 +277,18 @@ func getApplicationDeployment(app *apisv1alpha1.Application, namespace string) (
 					},
 				},
 				Spec: corev1.PodSpec{
+					Volumes: []corev1.Volume{
+						{
+							Name: serverConfigVolume,
+							VolumeSource: corev1.VolumeSource{
+								ConfigMap: &corev1.ConfigMapVolumeSource{
+									LocalObjectReference: corev1.LocalObjectReference{
+										Name: serverJsonConfigMapName(app),
+									},
+								},
+							},
+						},
+					},
 					Containers: []corev1.Container{
 						{
 							Name:            "pgadmin",
@@ -223,6 +299,21 @@ func getApplicationDeployment(app *apisv1alpha1.Application, namespace string) (
 									ContainerPort: 80,
 								},
 							},
+							VolumeMounts: []corev1.VolumeMount{
+								{
+									Name:      serverConfigVolume,
+									MountPath: "/pgadmin4/servers.json",
+									SubPath:   "servers.json",
+								},
+							},
+							Command: []string{"/bin/bash", "-c",
+								// We are leaking secrets to container definition!
+								// This is just a tech demo, and code brevity takes precedence.
+								// Don't use in production!
+								fmt.Sprintf(`
+    								echo '%[1]s' > %[2]s && chmod 0600 %[2]s \
+    								&& /entrypoint.sh
+    								`, pgpass.toPassfileContent(), pgpass.PassFile)},
 							Env: []corev1.EnvVar{
 								{
 									Name:  "PGADMIN_DEFAULT_EMAIL",
@@ -251,17 +342,6 @@ func getApplicationDeployment(app *apisv1alpha1.Application, namespace string) (
 								{
 									Name:  "PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION",
 									Value: "False",
-								},
-								{
-									Name: "PGADMIN_SERVER_JSON_FILE",
-									ValueFrom: &corev1.EnvVarSource{
-										SecretKeyRef: &corev1.SecretKeySelector{
-											Key: "servers.json",
-											LocalObjectReference: corev1.LocalObjectReference{
-												Name: app.Name + "-server",
-											},
-										},
-									},
 								},
 							},
 						},

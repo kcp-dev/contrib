@@ -51,6 +51,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
+	cnpgapiv1 "github.com/cloudnative-pg/cloudnative-pg/api/v1"
+
 	applicationapisv1alpha1 "github.com/kcp-dev/multicluster-provider/examples/crd/api/v1alpha1"
 	"github.com/kcp-dev/multicluster-provider/examples/crd/internal/controller"
 	// +kubebuilder:scaffold:imports
@@ -64,6 +66,7 @@ var (
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(clientgoscheme.Scheme))
 	utilruntime.Must(applicationapisv1alpha1.AddToScheme(clientgoscheme.Scheme))
+	utilruntime.Must(cnpgapiv1.AddToScheme(clientgoscheme.Scheme))
 	// MULTICLUSTER: This is where it differ from the default scaffold.
 	utilruntime.Must(apisv1alpha1.AddToScheme(clientgoscheme.Scheme))
 	// +kubebuilder:scaffold:scheme
