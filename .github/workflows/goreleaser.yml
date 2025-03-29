@@ -1,0 +1,47 @@
+name: goreleaser
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/goreleaser.yml
+      - 20250401-kubecon-london/workshop/kcp-multicluster-provider-example/.goreleaser.yaml
+  push:
+    tags:
+      - 'v1-kubecon2025-london'
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: v1.22.10
+
+      - name: Run GoReleaser on tag
+        if: github.event_name != 'pull_request'
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --timeout 60m
+          workdir: 20250401-kubecon-london/workshop/kcp-multicluster-provider-example
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+ 
+      - uses: actions/upload-artifact@v4
+        if: github.event_name == 'release'
+        with:
+          name: binaries
+          path: dist/*.tar.gz
