@@ -20,6 +20,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -97,7 +98,16 @@ func (r *ApplicationReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 		return ctrl.Result{}, err
 	}
 
-	pgpass := newPgpassData(&db, secret, namespace)
+	var dbCluster cnpgapiv1.Cluster
+	err = r.ProviderClient.Get(ctx, types.NamespacedName{
+		Namespace: namespace,
+		Name:      db.GetClusterRef().Name,
+	}, &dbCluster)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+
+	pgpass := newPgpassData(&db, &dbCluster, secret, namespace)
 
 	deployment, err := getApplicationDeployment(pgpass, app, namespace)
 	if err != nil {
@@ -184,16 +194,19 @@ type pgpassData struct {
 	PassFile      string
 	SSLMode       string
 	MaintenanceDB string
+	initDb        string
+	createdDb     string
 	secret        string
 }
 
 func newPgpassData(
 	db *cnpgapiv1.Database,
+	dbCluster *cnpgapiv1.Cluster,
 	secret corev1.Secret,
 	namespace string,
 ) *pgpassData {
 	return &pgpassData{
-		Name:          db.Name,
+		Name:          dbCluster.Name,
 		Group:         "Servers",
 		Host:          pgsqlServerHost(db),
 		Port:          5432,
@@ -201,6 +214,8 @@ func newPgpassData(
 		PassFile:      "/tmp/pgpassfile", // We don't have perms to write to /pgadmin4 where this normally would be.
 		SSLMode:       "prefer",
 		MaintenanceDB: "postgres",
+		initDb:        dbCluster.GetApplicationDatabaseName(),
+		createdDb:     db.Spec.Name,
 		secret:        string(secret.Data["password"]),
 	}
 }
@@ -217,9 +232,17 @@ func (data *pgpassData) toServersJson() ([]byte, error) {
 }
 
 func (data *pgpassData) toPassfileContent() string {
-	// See https://www.postgresql.org/docs/current/libpq-pgpass.html.
-	return fmt.Sprintf("%s:%d:%s:%s:%s",
-		data.Host, data.Port, data.MaintenanceDB, data.Username, data.secret)
+	var sb strings.Builder
+	for _, dbName := range []string{data.MaintenanceDB, data.initDb, data.createdDb} {
+		if dbName == "" {
+			continue
+		}
+		// See https://www.postgresql.org/docs/current/libpq-pgpass.html.
+		sb.WriteString(fmt.Sprintf("%s:%d:%s:%s:%s\n",
+			data.Host, data.Port, dbName, data.Username, data.secret))
+	}
+
+	return sb.String()
 }
 
 func getApplicationService(app *apisv1alpha1.Application, namespace string) (*corev1.Service, error) {
