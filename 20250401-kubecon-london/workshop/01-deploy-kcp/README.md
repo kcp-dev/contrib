@@ -55,7 +55,7 @@ Once kcp's output seems stable, we can start making simple kubectl calls against
         ```fish
         set -gx WORKSHOP_ROOT (git rev-parse --show-toplevel)/20250401-kubecon-london/workshop
         set -gx PATH $WORKSHOP_ROOT/bin $PATH
-        set -gx KUBECONFIG $WORKSHOP_ROOT/.kcp/admin.kubeconfig"
+        set -gx KUBECONFIG $WORKSHOP_ROOT/.kcp/admin.kubeconfig
         ```
 
 The following command should work now:

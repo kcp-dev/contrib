@@ -89,7 +89,7 @@ It references the database we've created earlier, and the Secret with credential
 ```shell title="Starting the mcp-app"
 kubectl ws use :root:providers:application
 mcp-example-crd --server=$(kubectl get apiexport apis.contrib.kcp.io -o jsonpath="{.status.virtualWorkspaces[0].url}") \
-  --provider-kubeconfig ${KUBECONFIGS_DIR}/provider.kubeconfig
+  --provider-kubeconfig $KUBECONFIGS_DIR/provider.kubeconfig
 ```
 
 !!! Important
