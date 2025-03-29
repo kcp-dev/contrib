@@ -353,7 +353,7 @@ Finished? High-five! Check-in your completion with:
 03-dynamic-providers/99-highfive.sh
 ```
 
-If there were no errors, you may continue with the next exercise.
+If there were no errors, you may continue with [the next exercise 🔥](/contrib/learning/20250401-kubecon-london/workshop/04-application-providers/)!
 
 ### Cheat-sheet
 
