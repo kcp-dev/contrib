@@ -1,0 +1,9 @@
+apiVersion: wildwest.dev/v1alpha1
+kind: Cowboy
+metadata:
+  name: hold-the-wall
+  namespace: default
+spec:
+  intent: "North is there the wall is!"
+status:
+  result: "Active"

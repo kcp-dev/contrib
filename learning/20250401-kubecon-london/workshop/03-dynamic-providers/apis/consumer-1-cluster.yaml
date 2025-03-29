@@ -1,0 +1,36 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: kcp
+spec:
+  instances: 1
+  bootstrap:
+    initdb:
+      database: app
+      owner: app
+      secret:
+        name: kcp-postgres
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: kcp-superuser
+  storage:
+    size: 1Gi
+---
+apiVersion: v1
+data:
+  username: YXBw
+  password: cGFzc3dvcmQ=
+kind: Secret
+metadata:
+  name: kcp-postgres
+type: kubernetes.io/basic-auth
+---
+apiVersion: v1
+data:
+  username: cG9zdGdyZXM=
+  password: cGFzc3dvcmQ=
+kind: Secret
+metadata:
+  name: kcp-superuser
+type: kubernetes.io/basic-auth
