@@ -24,8 +24,8 @@ kcp may be deployed via a [Helm chart](https://github.com/kcp-dev/helm-charts), 
     === "Fish"
 
         ```fish
-        set WORKSHOP_ROOT (git rev-parse --show-toplevel)/20250401-kubecon-london/workshop
-        set PATH $WORKSHOP_ROOT/bin $PATH
+        set -gx WORKSHOP_ROOT (git rev-parse --show-toplevel)/20250401-kubecon-london/workshop
+        set -gx PATH $WORKSHOP_ROOT/bin $PATH
         ```
 
 Starting kcp in standalone mode is as easy as typing `kcp start` and pressing Enter.
@@ -34,27 +34,28 @@ Starting kcp in standalone mode is as easy as typing `kcp start` and pressing En
 cd $WORKSHOP_ROOT && kcp start
 ```
 
-
 You should see the program running indefinitely, and outputting its logs--starting with some errors that should clean up in a couple of seconds as the different controllers start up. Leave the terminal window open, as we will keep using this kcp instance throughout the duration of the workshop. In this mode, all kcp's state is in-memory only. That means exiting the process (by, for example, pressing _Ctrl+C_ in this terminal), will lose all its etcd contents.
 
 Once kcp's output seems stable, we can start making simple kubectl calls against it. `kcp start` creates a hidden directory `.kcp`, where it places its kubeconfig and the certificates.
 
-Open a new terminal (termianl 2, same 01-deploy-kcp directory) now.
-
 !!! Important
+
+    Open a **second shell** and `cd` into workshop's directory now.
 
     === "Bash/ZSH"
 
         ```shell
         export WORKSHOP_ROOT="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop"
+        export PATH="${WORKSHOP_ROOT}/bin:${PATH}"
         export KUBECONFIG="${WORKSHOP_ROOT}/.kcp/admin.kubeconfig"
         ```
 
     === "Fish"
 
         ```fish
-        set WORKSHOP_ROOT (git rev-parse --show-toplevel)/20250401-kubecon-london/workshop
-        set KUBECONFIG $WORKSHOP_ROOT/.kcp/admin.kubeconfig"
+        set -gx WORKSHOP_ROOT (git rev-parse --show-toplevel)/20250401-kubecon-london/workshop
+        set -gx PATH $WORKSHOP_ROOT/bin $PATH
+        set -gx KUBECONFIG $WORKSHOP_ROOT/.kcp/admin.kubeconfig"
         ```
 
 The following command should work now:
@@ -90,4 +91,5 @@ If there were no errors, you may continue with the next exercise.
 ### Cheat-sheet
 
 You may fast-forward through this exercise by running:
+
 * `01-deploy-kcp/01-start-kcp.sh` in a new terminal

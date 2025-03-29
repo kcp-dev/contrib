@@ -22,7 +22,7 @@ We won't go into any implementation details here, but you are very welcome to in
 
 ## There is an App in my WS! 🤌
 
-The Application brought to you by **SQL<sup>3</sup> Co.** has a CRD definition and a controller that comes with it, and that they are running (we'll see how right after this) on their infrastructure. They were also nice enough prepare an APIResourceSchema too! For us at kcp land though, not much will change since the last time. In a provider workspace we create an APIExport for the prepared APIResourceSchema, and then we add consumers by binding to that export.
+The Application brought to you by **SQL<sup>3</sup> Co.** has a CRD definition and a controller that comes with it, and that they are running (we'll see how right after this) on their infrastructure. They were also nice enough to prepare an APIResourceSchema too! For us at kcp land though, not much will change since the last time. In a provider workspace we create an APIExport for the prepared APIResourceSchema, and then we add consumers by binding to that export.
 
 !!! Important
 
@@ -92,6 +92,33 @@ mcp-example-crd --server=$(kubectl get apiexport apis.contrib.kcp.io -o jsonpath
   --provider-kubeconfig ${KUBECONFIGS_DIR}/provider.kubeconfig
 ```
 
+!!! Important
+
+    We now have three long-running processes. Let's open a **fourth shell** now.
+
+    === "Bash/ZSH"
+
+        ```shell
+        export WORKSHOP_ROOT="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop"
+        export EXERCISE_DIR="${WORKSHOP_ROOT}/03-dynamic-providers"
+        export KUBECONFIGS_DIR="${WORKSHOP_ROOT}/kubeconfigs"
+        export KREW_ROOT="${WORKSHOP_ROOT}/bin/.krew"
+        export PATH="${WORKSHOP_ROOT}/bin/.krew/bin:${WORKSHOP_ROOT}/bin:${PATH}"
+        export KUBECONFIG="${KUBECONFIGS_DIR}/admin.kubeconfig"
+        ```
+
+    === "Fish"
+
+        ```fish
+        set -gx WORKSHOP_ROOT (git rev-parse --show-toplevel)/20250401-kubecon-london/workshop
+        set -gx EXERCISE_DIR $WORKSHOP_ROOT/03-dynamic-providers
+        set -gx KUBECONFIGS_DIR $WORKSHOP_ROOT/kubeconfigs
+        set -gx KREW_ROOT $WORKSHOP_ROOT/bin/.krew
+        set -gx PATH $WORKSHOP_ROOT/bin/.krew/bin $WORKSHOP_ROOT/bin $PATH
+        set -gx KUBECONFIG $KUBECONFIGS_DIR/admin.kubeconfig
+        ```
+
+
 ```shell-session title="View of the service owner cluster"
 $ export KUBECONFIG=$KUBECONFIGS_DIR/provider.kubeconfig
 $ kubectl get namespaces # Get the namespace in question. Can you guess which one it is?
@@ -140,21 +167,21 @@ KUBECONFIG=$KUBECONFIGS_DIR/provider.kubeconfig kubectl port-forward svc/applica
 
 ### Drum-roll 🥁🥁🥁
 
-The last thing for you to do is to open up your browser, and visit `localhost:8080` using web-previou tab in google shell or your machine! << ???
+The last thing for you to do is to open up your browser, and visit `localhost:8080` in your browser.
 
 ## High-five! 🚀🚀🚀
 
 Congratulations, you've reached the finishing line! Great job!
 
-This was a lot to take in, so let's recap. We've gone through basic concepts of kcp, what proper resource isolation looks like, but also how APIs can be shared. We've also learnt that we can specify what resources to share, limiting the scope of what a provider and consumer can reach. Using those principles we've been able to build consumer-producer relationship between Kubernetes endpoints: not only inside a single kcp instance, but with external clusters too. We've also peaked into multicluster controllers and reconcilers, where the options to inovate are vast. We invite you to give it a try, and see how your Kubernetes infrastructure could benefit from a true SaaS approach, with kcp!
+This was a lot to take in, so let's recap. We've gone through basic concepts of kcp, what proper resource isolation looks like, but also how APIs can be shared. We've also learnt that we can specify what resources to share, limiting the scope of what a provider and consumer can reach. Using those principles we've been able to build consumer-producer relationship between Kubernetes endpoints: not only inside a single kcp instance, but with external clusters too. We've also peaked into multicluster controllers and reconcilers, where the options to innovate are vast. We invite you to give it a try, and see how your Kubernetes infrastructure could benefit from a true SaaS approach, with kcp!
 
 ### Where to next
 
 More kcp talks at this conference:
 
-* You are here: [Tutorial: Exploring Multi-Tenant Kubernetes APIs and Controllers With Kcp - Robert Vasek, Clyso GmbH; Nabarun Pal, Independent; Varsha Narsing, Red Hat; Marko Mudrinic, Kubermatic GmbH; Mangirdas Judeikis, Cast AI](https://kccnceu2025.sched.com/event/1tx6b/tutorial-exploring-multi-tenant-kubernetes-apis-and-controllers-with-kcp-robert-vasek-clyso-gmbh-nabarun-pal-independent-varsha-narsing-red-hat-marko-mudrinic-kubermatic-gmbh-mangirdas-judeikis-cast-ai?iframe=no&w=100%&sidebar=yes&bg=no)
-* **Thursday**, 3 April: [Extending Kubernetes Resource Model (KRM) Beyond Kubernetes Workloads - Mangirdas Judeikis, Cast AI & Nabarun Pal, Independent](https://kccnceu2025.sched.com/event/1txAB/extending-kubernetes-resource-model-krm-beyond-kubernetes-workloads-mangirdas-judeikis-cast-ai-nabarun-pal-independent?iframe=no&w=100%&sidebar=yes&bg=no)
-* also **Thursday**, 3 April: [Dynamic Multi-Cluster Controllers With Controller-runtime - Marvin Beckers, Kubermatic & Stefan Schimanski, Upbound](https://kccnceu2025.sched.com/event/1txFM/dynamic-multi-cluster-controllers-with-controller-runtime-marvin-beckers-kubermatic-stefan-schimanski-upbound?iframe=no&w=100%&sidebar=yes&bg=no)
+* **You are here:** [Tutorial: Exploring Multi-Tenant Kubernetes APIs and Controllers With Kcp - Robert Vasek, Clyso GmbH; Nabarun Pal, Independent; Varsha Narsing, Red Hat; Marko Mudrinic, Kubermatic GmbH; Mangirdas Judeikis, Cast AI](https://kccnceu2025.sched.com/event/1tx6b/tutorial-exploring-multi-tenant-kubernetes-apis-and-controllers-with-kcp-robert-vasek-clyso-gmbh-nabarun-pal-independent-varsha-narsing-red-hat-marko-mudrinic-kubermatic-gmbh-mangirdas-judeikis-cast-ai?iframe=no&w=100%&sidebar=yes&bg=no)
+* **Thursday**, 3 April **11:00 - 11:30 BST:** [Extending Kubernetes Resource Model (KRM) Beyond Kubernetes Workloads - Mangirdas Judeikis, Cast AI & Nabarun Pal, Independent](https://kccnceu2025.sched.com/event/1txAB/extending-kubernetes-resource-model-krm-beyond-kubernetes-workloads-mangirdas-judeikis-cast-ai-nabarun-pal-independent?iframe=no&w=100%&sidebar=yes&bg=no)
+* also **Thursday**, 3 April **15:00 - 15:30 BST:** [Dynamic Multi-Cluster Controllers With Controller-runtime - Marvin Beckers, Kubermatic & Stefan Schimanski, Upbound](https://kccnceu2025.sched.com/event/1txFM/dynamic-multi-cluster-controllers-with-controller-runtime-marvin-beckers-kubermatic-stefan-schimanski-upbound?iframe=no&w=100%&sidebar=yes&bg=no)
 
 After this conference:
 
