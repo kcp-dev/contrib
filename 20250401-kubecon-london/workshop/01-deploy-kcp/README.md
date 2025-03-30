@@ -55,7 +55,7 @@ Once kcp's output seems stable, we can start making simple kubectl calls against
         ```fish
         set -gx WORKSHOP_ROOT (git rev-parse --show-toplevel)/20250401-kubecon-london/workshop
         set -gx PATH $WORKSHOP_ROOT/bin $PATH
-        set -gx KUBECONFIG $WORKSHOP_ROOT/.kcp/admin.kubeconfig"
+        set -gx KUBECONFIG $WORKSHOP_ROOT/.kcp/admin.kubeconfig
         ```
 
 The following command should work now:
@@ -86,7 +86,7 @@ Finished? High-five! Check-in your completion with:
 01-deploy-kcp/99-highfive.sh
 ```
 
-If there were no errors, you may continue with the next exercise.
+If there were no errors, you may continue with [the next exercise 🔥](/contrib/learning/20250401-kubecon-london/workshop/02-explore-workspaces/)!
 
 ### Cheat-sheet
 

@@ -37,7 +37,7 @@ Ready for a warm-up? In this quick exercise we are going to install programs we'
 
 * [kcp](https://github.com/kcp-dev/kcp/releases/latest),
 * kcp's [api-syncagent](https://github.com/kcp-dev/api-syncagent/releases/latest),
-* kcp's [multicluster-controller runtime example binary](https://github.com/mjudeikis/kcp-multicluster-provider-example/releases/download),
+* kcp's [multicluster-controller runtime example binary](https://github.com/kcp-dev/contrib/releases/tag/v1-kubecon2025-london),
 * [kind](https://github.com/kubernetes-sigs/kind/releases/latest),
 * [kubectl](https://kubernetes.io/docs/tasks/tools/),
 * and, [kubectl-krew](https://krew.sigs.k8s.io/docs/user-guide/setup/install/).
@@ -64,4 +64,4 @@ Done already? High-five! Check-in your completion with:
 00-prerequisites/99-highfive.sh
 ```
 
-If there were no errors, you may continue with the next exercise.
+If there were no errors, you may continue with [the next exercise 🔥](/contrib/learning/20250401-kubecon-london/workshop/01-deploy-kcp/)!

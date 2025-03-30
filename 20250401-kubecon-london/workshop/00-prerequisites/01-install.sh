@@ -28,7 +28,7 @@ fi
 
 if [[ ! -f "${WORKSHOP_ROOT}/bin/.checkpoint-mcp-example-crd" ]]; then
     echo "🚀 Downloading KCP's mcp-example-crd"
-    curl -L "https://github.com/mjudeikis/kcp-multicluster-provider-example/releases/download/v0.0.4/kcp-multicluster-provider-example_0.0.4_${GOOS}_${GOARCH}.tar.gz" \
+    curl -L "https://github.com/kcp-dev/contrib/releases/download/v1-kubecon2025-london/contrib_1-kubecon2025-london_${GOOS}_${GOARCH}.tar.gz" \
       | tar -C "${WORKSHOP_ROOT}/bin" -xzf - mcp-example-crd
     touch "${WORKSHOP_ROOT}/bin/.checkpoint-mcp-example-crd"
 fi

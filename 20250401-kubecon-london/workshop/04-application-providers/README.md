@@ -4,7 +4,7 @@ title: "04: Application providers"
 
 # Application providers
 
-In our last exercise of this workshop we'll take a look at a kcp-native application, that uses [sigs.k8s.io/multicluster-runtime](https://github.com/kubernetes-sigs/multicluster-runtime) to run a kcp provider, and reconciles the deployment across workspaces.
+In our last exercise of this workshop we'll take a look at a kcp-native application that uses [sigs.k8s.io/multicluster-runtime](https://github.com/kubernetes-sigs/multicluster-runtime) to run a kcp provider, and reconciles the deployment across workspaces.
 
 ## Going native
 
@@ -13,12 +13,12 @@ After the great kick-off with the PostgreSQL-as-a-Service business, the folks ba
 To accomplish that, they say all they had to use was:
 
 * [kubebuilder](https://github.com/kubernetes-sigs/kubebuilder) to scaffold the project and CRDs,
-* [sigs.k8s.io/multicluster-runtime](https://github.com/kubernetes-sigs/multicluster-runtime) to provide multicluster manager, controller and reconciler functionalities,
-* [github.com/kcp-dev/multicluster-provider/virtualworkspace]() to interact with kcp virtual workspaces,
-* [github.com/kcp-dev/kcp/sdk]() to add in kcp schemas,
+* [sigs.k8s.io/multicluster-runtime](https://sigs.k8s.io/multicluster-runtime) to provide multicluster manager, controller and reconciler functionalities,
+* [github.com/kcp-dev/multicluster-provider](https://github.com/kcp-dev/multicluster-provider) to interact with kcp virtual workspaces,
+* [github.com/kcp-dev/kcp/sdk](https://github.com/kcp-dev/kcp/tree/main/sdk) to add in kcp schemas,
 * and lastly, [github.com/cloudnative-pg/cloudnative-pg](https://github.com/cloudnative-pg/cloudnative-pg) to be able to work with _postgresql.cnpg.io_ resources.
 
-We won't go into any implementation details here, but you are very welcome to inspect and play around with the code yourself at <>. The kcp-aware bits are clearly marked to see what multicluster bits need to be added into the kubebuilder-generated base. As far as the complexity goes, we hope you will find it quite underwhelming :)
+We won't go into any implementation details here, but you are very welcome to inspect and play around with the code yourself at <https://github.com/kcp-dev/contrib/tree/main/20250401-kubecon-london/workshop/kcp-multicluster-provider-example>. The kcp-aware bits are clearly marked to see what multicluster bits need to be added into the kubebuilder-generated base. As far as the complexity goes, we hope you will find it quite underwhelming :)
 
 ## There is an App in my WS! 🤌
 
@@ -89,7 +89,7 @@ It references the database we've created earlier, and the Secret with credential
 ```shell title="Starting the mcp-app"
 kubectl ws use :root:providers:application
 mcp-example-crd --server=$(kubectl get apiexport apis.contrib.kcp.io -o jsonpath="{.status.virtualWorkspaces[0].url}") \
-  --provider-kubeconfig ${KUBECONFIGS_DIR}/provider.kubeconfig
+  --provider-kubeconfig $KUBECONFIGS_DIR/provider.kubeconfig
 ```
 
 !!! Important

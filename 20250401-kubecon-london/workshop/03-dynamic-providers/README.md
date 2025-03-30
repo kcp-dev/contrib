@@ -33,7 +33,7 @@ Excited? Let's get down to it!
         set -gx EXERCISE_DIR $WORKSHOP_ROOT/03-dynamic-providers
         set -gx KUBECONFIGS_DIR $WORKSHOP_ROOT/kubeconfigs
         set -gx KREW_ROOT $WORKSHOP_ROOT/bin/.krew
-        set -gx PATH $WORKSHOP_ROOT/bin/.krew/bin $WORKSHOP_ROOT/bin $PATH"
+        set -gx PATH $WORKSHOP_ROOT/bin/.krew/bin $WORKSHOP_ROOT/bin $PATH
         ```
 
 Surprise! You've just been appointed as the owner of a company responsible for running PostgreSQL databases, **SQL<sup>3</sup> Co.**! What's worse, you haven't heard of kcp yet! What you did hear of though is that PostgreSQL servers need compute and storage. And that Kubernetes can do all of that. So, to get things going, let's start up a [kind](https://kind.sigs.k8s.io/)-backed Kubernetes cluster:
@@ -353,7 +353,7 @@ Finished? High-five! Check-in your completion with:
 03-dynamic-providers/99-highfive.sh
 ```
 
-If there were no errors, you may continue with the next exercise.
+If there were no errors, you may continue with [the next exercise 🔥](/contrib/learning/20250401-kubecon-london/workshop/04-application-providers/)!
 
 ### Cheat-sheet
 
