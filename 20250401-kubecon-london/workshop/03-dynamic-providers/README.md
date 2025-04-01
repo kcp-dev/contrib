@@ -296,6 +296,9 @@ kcp-superuser   kubernetes.io/basic-auth   2      9m3s
 
 Indeed, if you check the kcp side, you'll see that we have only one consumer `pg` with a single database instance in our workspace `root:consumers:pg`. Nothing stops us from creating more however. We are however going to limit ourselves to only one consumer during the workshop. Feel free to explore and create more consumers later yourself!
 
+![Diagram of a PGaaS with a single provider and two consumers](./pgaas.png#only-light)
+![Diagram of a PGaaS with a single provider and two consumers](./pgaas-dark.png#only-dark)
+
 Now, what can we do with it? You may recall that there were Secrets involved in the permission claims when we bound the APIExport. As it turns out, we have a Secret with admin access to the PostgreSQL server (as we should, we own it!), and can use it to authenticate.
 
 > A side note: we are going to cheat a bit now. We are running all the clusters on the same machine, and we know what IPs and ports to use. Having the username and the password to the DB is one thing, knowing where to connect is another. In the real world, **SQL<sup>3</sup> Co.** would have created a proper Ingress with a Service for us, and generated a connection string inside a Secret, and this would all work as it stands. Not having done that though, let's agree on a simplification: in place of ingress we will use port-forwarding, and the connection string we will create ourselves.

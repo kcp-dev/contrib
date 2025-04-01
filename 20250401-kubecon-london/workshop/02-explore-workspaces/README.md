@@ -307,6 +307,9 @@ default     buckaroo-bill
 default     hold-the-wall
 ```
 
+![Diagram of a LogicalCluster](./diagram-api-endpoint.png#only-light)
+![Diagram of a LogicalCluster](./diagram-api-endpoint-dark.png#only-dark)
+
 You can play around with inspecting the json output of those commands, and try addressing a specific cluster instead of all of them (wildcard `*`) to get some intuition about how they are wired together.
 
 From that, you can already start imagining what a workspace-aware controller operating on these objects would look like: being able to observe global state in its workspace subtree, it would watch spec updates from its children (Spec up), and push them status updates (Status down). Our basic example is lacking such a controller. But that's something we are going to fix the next exercise, on a more interesting example!

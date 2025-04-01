@@ -140,6 +140,9 @@ NAME                                             DESIRED   CURRENT   READY   AGE
 replicaset.apps/application-kcp--578c5dd4df      1         1         1       29s
 ```
 
+![Diagram of a multicluster Application deployment provider](./pgadminaas.png#only-light)
+![Diagram of a multicluster Application deployment provider](./pgadminaas-dark.png#only-dark)
+
 Continuing in our consumer workspace, let's check the Application object!
 
 ```shell-session
