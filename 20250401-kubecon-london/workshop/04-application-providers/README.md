@@ -100,7 +100,7 @@ mcp-example-crd --server=$(kubectl get apiexport apis.contrib.kcp.io -o jsonpath
 
         ```shell
         export WORKSHOP_ROOT="$(git rev-parse --show-toplevel)/20250401-kubecon-london/workshop"
-        export EXERCISE_DIR="${WORKSHOP_ROOT}/03-dynamic-providers"
+        export EXERCISE_DIR="${WORKSHOP_ROOT}/04-application-providers"
         export KUBECONFIGS_DIR="${WORKSHOP_ROOT}/kubeconfigs"
         export KREW_ROOT="${WORKSHOP_ROOT}/bin/.krew"
         export PATH="${WORKSHOP_ROOT}/bin/.krew/bin:${WORKSHOP_ROOT}/bin:${PATH}"
@@ -111,7 +111,7 @@ mcp-example-crd --server=$(kubectl get apiexport apis.contrib.kcp.io -o jsonpath
 
         ```fish
         set -gx WORKSHOP_ROOT (git rev-parse --show-toplevel)/20250401-kubecon-london/workshop
-        set -gx EXERCISE_DIR $WORKSHOP_ROOT/03-dynamic-providers
+        set -gx EXERCISE_DIR $WORKSHOP_ROOT/04-application-providers
         set -gx KUBECONFIGS_DIR $WORKSHOP_ROOT/kubeconfigs
         set -gx KREW_ROOT $WORKSHOP_ROOT/bin/.krew
         set -gx PATH $WORKSHOP_ROOT/bin/.krew/bin $WORKSHOP_ROOT/bin $PATH

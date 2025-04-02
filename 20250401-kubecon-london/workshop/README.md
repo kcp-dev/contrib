@@ -34,4 +34,4 @@ All the tools and services we'll present during this workshop are local-installa
 
 ## Starting out
 
-Once ready, start by heading over to the first warm-up exercise: `00-prerequisites`.
+Once ready, start by heading over to the first warm-up exercise: [`00-prerequisites` 🔥](/contrib/learning/20250401-kubecon-london/workshop/00-prerequisites/)!
