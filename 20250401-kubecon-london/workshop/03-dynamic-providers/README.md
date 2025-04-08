@@ -161,7 +161,7 @@ To do all of that, kcp offers one implementation of such a controller, the [api-
         ```
 
 ```shell
-kubectl apply --server-side -f https://raw.githubusercontent.com/kcp-dev/api-syncagent/refs/heads/main/deploy/crd/kcp.io/syncagent.kcp.io_publishedresources.yaml
+kubectl apply --server-side -f https://raw.githubusercontent.com/kcp-dev/api-syncagent/refs/tags/v0.2.0/deploy/crd/kcp.io/syncagent.kcp.io_publishedresources.yaml
 kubectl apply -f $EXERCISE_DIR/apis/resources-cluster.yaml
 kubectl apply -f $EXERCISE_DIR/apis/resources-database.yaml
 ```
