@@ -13,7 +13,7 @@ export KUBECONFIG="${KUBECONFIGS_DIR}/provider.kubeconfig"
 kind_cluster_name='provider'
 
 ::kubectl::apply_from_file 'https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.25/releases/cnpg-1.25.1.yaml'
-::kubectl::apply_from_file 'https://raw.githubusercontent.com/kcp-dev/api-syncagent/refs/heads/main/deploy/crd/kcp.io/syncagent.kcp.io_publishedresources.yaml'
+::kubectl::apply_from_file 'https://raw.githubusercontent.com/kcp-dev/api-syncagent/refs/tags/v0.2.0/deploy/crd/kcp.io/syncagent.kcp.io_publishedresources.yaml'
 ::kubectl::apply_from_file "${EXERCISE_DIR}/apis/resources-cluster.yaml"
 ::kubectl::apply_from_file "${EXERCISE_DIR}/apis/resources-database.yaml"
 
