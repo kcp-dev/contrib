@@ -31,3 +31,4 @@ kcp-operator
 .checkpoint-**
 
 .idea/
+./20241013-kubecon-saltlakecity/mounts-vw/hack/tools/*
