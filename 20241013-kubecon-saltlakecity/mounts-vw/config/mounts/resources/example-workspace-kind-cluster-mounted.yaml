@@ -1,0 +1,10 @@
+apiVersion: tenancy.kcp.io/v1alpha1
+kind: Workspace
+metadata:
+  name: kind-cluster
+spec:
+  mount:
+    ref:
+      apiVersion: mounts.contrib.kcp.io/v1alpha1
+      kind: KubeCluster
+      name: proxy-cluster
