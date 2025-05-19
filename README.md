@@ -2,7 +2,7 @@
 
 This repository contains the list of demo code, slides and other materials used in the meetups, conferences.
 
-For sessions walkthrough with step-by-step exercises, visit the [Learning](/contrib/learning/) page.
+For sessions walkthrough with step-by-step exercises, visit the [Learning](https://docs.kcp.io/contrib/learning/) page.
 
 - [Platform Engineering Day EU 2024 - Building a Platform Engineering API Layer with kcp](./20240319-platform-engineering-day-eu-paris/)
     - [YouTube](https://www.youtube.com/watch?v=az5Rm8Snms4)
