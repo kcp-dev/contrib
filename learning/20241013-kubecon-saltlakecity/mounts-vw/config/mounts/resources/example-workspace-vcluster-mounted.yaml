@@ -1,0 +1,10 @@
+apiVersion: tenancy.kcp.io/v1alpha1
+kind: Workspace
+metadata:
+  name: vcluster
+spec:
+  mount:
+    ref:
+      apiVersion: mounts.contrib.kcp.io/v1alpha1
+      kind: VCluster
+      name: virtual-cluster

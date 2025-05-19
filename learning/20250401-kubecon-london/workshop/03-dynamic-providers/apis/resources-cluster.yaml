@@ -1,0 +1,20 @@
+apiVersion: syncagent.kcp.io/v1alpha1
+kind: PublishedResource
+metadata:
+  name: publish-cnpg-cluster
+spec:
+  resource:
+    kind: Cluster
+    apiGroup: postgresql.cnpg.io
+    version: v1
+  naming:
+    # This is the implicit default configuration.
+    namespace: "$remoteClusterName"
+    name: "$remoteName"
+  related:
+  - kind: Secret
+    origin: kcp
+    identifier: credentials
+    reference:
+      name:
+        path: "spec.superuserSecret.name"
