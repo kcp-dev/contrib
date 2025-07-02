@@ -1,0 +1,62 @@
+name: examples
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'examples/**'
+      - '.github/workflows/examples.yaml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'examples/**'
+      - '.github/workflows/examples.yaml'
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  list-examples:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: list-examples
+        run: |
+          {
+            echo -n 'examples=['
+            find examples -mindepth 1 -maxdepth 1 -type d -printf '"%f",'
+            echo -n ']'
+          } > "$GITHUB_OUTPUT"
+          sed -i 's#,]#]#' "$GITHUB_OUTPUT"
+    outputs:
+      examples: ${{ steps.list-examples.outputs.examples }}
+
+  run-examples:
+    runs-on: ubuntu-latest
+    needs:
+      - list-examples
+    strategy:
+      matrix:
+        example: ${{ fromJson(needs.list-examples.outputs.examples) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: azure/setup-helm@v4
+      - uses: helm/kind-action@v1
+        with:
+          # Only install kind without setting up any clusters. Clusters
+          # will be created as needed in the examples.
+          install_only: true
+
+      - run: ./hack/markdown2script.sh ./examples/${{ matrix.example }}/readme.md bash noci > ./examples/${{ matrix.example }}/run.sh
+      - run: |
+          cat ./run.sh
+          sh ./run.sh
+        working-directory: ./examples/${{ matrix.example }}
+
