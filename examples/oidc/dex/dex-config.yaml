@@ -1,0 +1,31 @@
+issuer: https://dex:5557/
+
+web:
+  https: 0.0.0.0:5557
+  tlsKey: /dex/server.key
+  tlsCert: /dex/server.crt
+
+storage:
+  type: memory
+
+logger:
+  level: debug
+  format: text
+
+# enables staticPasswords
+enablePasswordDB: true
+oauth2:
+  skipApprovalScreen: true
+  passwordConnector: local
+
+staticPasswords:
+  # password is the username
+  - email: "admin@example.com"
+    hash: "$2y$10$R5dR9EHekmtNBKrMu9Hv.uD5EHS.28qsEemApdOgHlXsYCBLzM9VW"
+    username: "admin"
+    userID: "08a8684b-db88-4b73-90a9-3cd1661f5466"
+
+staticClients:
+  - id: kcp
+    public: true
+    name: 'KCP Client'
