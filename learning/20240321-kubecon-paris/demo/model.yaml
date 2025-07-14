@@ -1,0 +1,13 @@
+kind: Model
+apiVersion: training.faros.sh/v1alpha1
+metadata:
+  name: chat
+  namespace: default
+spec:
+  model: Llama2
+  nProcPerNod: 1
+  script: chat_completion.py
+  ckptDir: /pvc/data
+  tokenizerPath: tokenizer.model
+  maxSeqLen: "512"
+  maxBatchSize: "6"

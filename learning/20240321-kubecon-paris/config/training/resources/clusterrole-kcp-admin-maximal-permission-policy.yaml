@@ -1,0 +1,8 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: system:faros-ml:apiexport:kcp-admin:maximal-permission-policy
+rules:
+  - apiGroups: ["training.faros.sh"]
+    verbs: ["*"]
+    resources: ["*"]

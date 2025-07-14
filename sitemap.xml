@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <url>
+        <loc>https://docs.kcp.io/contrib/</loc>
+        <lastmod>2025-07-14</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.kcp.io/contrib/"/>
+    </url>
+    <url>
+        <loc>https://docs.kcp.io/contrib/examples/oidc/readme/</loc>
+        <lastmod>2025-07-14</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.kcp.io/contrib/examples/oidc/readme/"/>
+    </url>
+    <url>
+        <loc>https://docs.kcp.io/contrib/learning/</loc>
+        <lastmod>2025-07-14</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.kcp.io/contrib/learning/"/>
+    </url>
+    <url>
+        <loc>https://docs.kcp.io/contrib/learning/20240321-kubecon-paris/</loc>
+        <lastmod>2025-07-14</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.kcp.io/contrib/learning/20240321-kubecon-paris/"/>
+    </url>
+    <url>
+        <loc>https://docs.kcp.io/contrib/learning/20241013-kubecon-saltlakecity/mounts-vw/</loc>
+        <lastmod>2025-07-14</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.kcp.io/contrib/learning/20241013-kubecon-saltlakecity/mounts-vw/"/>
+    </url>
+    <url>
+        <loc>https://docs.kcp.io/contrib/learning/20241013-kubecon-saltlakecity/mounts-vw/reconciler/mounts/</loc>
+        <lastmod>2025-07-14</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.kcp.io/contrib/learning/20241013-kubecon-saltlakecity/mounts-vw/reconciler/mounts/"/>
+    </url>
+    <url>
+        <loc>https://docs.kcp.io/contrib/learning/20241013-kubecon-saltlakecity/mounts-vw/reconciler/targets/</loc>
+        <lastmod>2025-07-14</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.kcp.io/contrib/learning/20241013-kubecon-saltlakecity/mounts-vw/reconciler/targets/"/>
+    </url>
+    <url>
+        <loc>https://docs.kcp.io/contrib/learning/20250401-kubecon-london/workshop/</loc>
+        <lastmod>2025-07-14</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.kcp.io/contrib/learning/20250401-kubecon-london/workshop/"/>
+    </url>
+    <url>
+        <loc>https://docs.kcp.io/contrib/learning/20250401-kubecon-london/workshop/00-prerequisites/</loc>
+        <lastmod>2025-07-14</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.kcp.io/contrib/learning/20250401-kubecon-london/workshop/00-prerequisites/"/>
+    </url>
+    <url>
+        <loc>https://docs.kcp.io/contrib/learning/20250401-kubecon-london/workshop/01-deploy-kcp/</loc>
+        <lastmod>2025-07-14</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.kcp.io/contrib/learning/20250401-kubecon-london/workshop/01-deploy-kcp/"/>
+    </url>
+    <url>
+        <loc>https://docs.kcp.io/contrib/learning/20250401-kubecon-london/workshop/02-explore-workspaces/</loc>
+        <lastmod>2025-07-14</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.kcp.io/contrib/learning/20250401-kubecon-london/workshop/02-explore-workspaces/"/>
+    </url>
+    <url>
+        <loc>https://docs.kcp.io/contrib/learning/20250401-kubecon-london/workshop/03-dynamic-providers/</loc>
+        <lastmod>2025-07-14</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.kcp.io/contrib/learning/20250401-kubecon-london/workshop/03-dynamic-providers/"/>
+    </url>
+    <url>
+        <loc>https://docs.kcp.io/contrib/learning/20250401-kubecon-london/workshop/04-application-providers/</loc>
+        <lastmod>2025-07-14</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.kcp.io/contrib/learning/20250401-kubecon-london/workshop/04-application-providers/"/>
+    </url>
+</urlset>
