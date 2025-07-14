@@ -11,6 +11,9 @@ demonstrates how to configure KCP to authenticate against it.
 - docker
 - jq
 
+Clone the [contrib](https://github.com/kcp-dev/contrib) repository and
+enter the `examples/oidc` directory.
+
 ## Create network
 
 Create a separate docker network for the kcp components to run in:
